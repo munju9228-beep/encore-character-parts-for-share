@@ -1,0 +1,16 @@
+{
+  "name": "마이캐 파츠 노트",
+  "short_name": "파츠 노트",
+  "description": "아이카츠! 앙코르 마이캐릭터 파츠 정리 (팬 제작 비공식 도구)",
+  "lang": "ko",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#FFF4F9",
+  "theme_color": "#FF4F9A",
+  "icons": [
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "icons/icon-512-maskable.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}
