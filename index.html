@@ -74,7 +74,7 @@ header.top{padding:22px 0 14px}
 
 /* tabs */
 nav.tabs{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);display:flex;gap:6px;padding:10px 0;border-bottom:2px dashed var(--line)}
-nav.tabs button{border:0;background:transparent;padding:8px 14px;border-radius:99px;font-family:"Jua",sans-serif;font-size:17px;color:var(--ink-soft)}
+nav.tabs button{border:0;background:transparent;padding:8px 12px;border-radius:99px;font-family:"Jua",sans-serif;font-size:17px;color:var(--ink-soft)}
 nav.tabs button[aria-selected="true"]{background:var(--ink);color:var(--bg)}
 
 /* toolbar */
@@ -127,14 +127,37 @@ nav.tabs button[aria-selected="true"]{background:var(--ink);color:var(--bg)}
 .tile .txt{padding:0 3px;display:flex;flex-direction:column;gap:3px;flex:1}
 .tile .ja{font-size:11px;color:var(--ink-soft);line-height:1.3;overflow-wrap:anywhere}
 .tile.owned{border-color:var(--gold);background:linear-gradient(var(--paper),var(--paper)) padding-box}
-.tile.want{border-style:dashed;border-color:var(--pink)}
 .tile .sw{width:34px;height:34px;border-radius:50%;border:2px solid var(--line);display:grid;place-items:center;font-family:"Jua",sans-serif;font-size:15px;color:var(--ink-soft);background:var(--bg)}
 .tile .nm{font-size:13.5px;line-height:1.3;word-break:keep-all;overflow-wrap:anywhere}
 .tile .mt{font-size:12px;color:var(--ink-soft);margin-top:auto}
-.tile .open{position:absolute;inset:0;border:0;background:transparent;border-radius:14px}
-.stamp{position:absolute;top:9px;right:9px;z-index:1;border:0;border-radius:99px;padding:3px 8px;font-family:"Jua",sans-serif;font-size:12px;box-shadow:0 1px 3px rgba(40,20,60,.18);line-height:1.2;background:var(--bg);color:var(--ink-soft)}
+.tile .open{position:absolute;inset:0;border:0;background:transparent;border-radius:14px;z-index:1}
+.stamp{position:absolute;top:9px;left:9px;z-index:2;border:0;border-radius:99px;padding:3px 8px;font-family:"Jua",sans-serif;font-size:12px;box-shadow:0 1px 3px rgba(40,20,60,.18);line-height:1.2;background:var(--bg);color:var(--ink-soft)}
 .tile.owned .stamp{background:var(--gold);color:#3A2A00}
-.tile.want .stamp{background:var(--pink);color:var(--on-accent)}
+.hb{position:absolute;top:9px;right:9px;z-index:2;width:24px;height:24px;border-radius:50%;background:var(--paper);display:grid;place-items:center;box-shadow:0 1px 3px rgba(40,20,60,.18);pointer-events:none}
+.hb svg{width:15px;height:15px;fill:var(--pink)}
+.hs{display:inline-block;vertical-align:-2px;margin-left:4px}
+.hs svg{width:13px;height:13px;fill:var(--pink)}
+.sheet-h{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:0 0 14px}
+.sheet-h h2{margin:0}
+.heartbtn{display:flex;align-items:center;gap:6px;border:2px solid var(--line);background:var(--bg);border-radius:99px;padding:6px 14px 6px 10px;font-family:"Jua",sans-serif;font-size:15px;color:var(--ink-soft);white-space:nowrap}
+.heartbtn svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.8;transition:transform .2s}
+.heartbtn[aria-pressed="true"]{border-color:var(--pink);background:var(--pink-soft);color:var(--accent-ink)}
+.heartbtn[aria-pressed="true"] svg{fill:var(--pink);stroke:var(--pink)}
+.news{background:var(--paper);border:2px solid var(--line);border-radius:18px;padding:14px 16px;margin-bottom:10px}
+.news.pin{border-color:var(--pink)}
+.news-h{display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-size:12px;color:var(--ink-soft)}
+.ntag{font-family:"Jua",sans-serif;font-size:12px;border-radius:8px;padding:2px 8px;background:var(--pink-soft);color:var(--accent-ink)}
+.ntag.game{background:var(--sky-soft);color:#1F6FB0}
+.ntag.pin{background:var(--pink);color:var(--on-accent)}
+.news h3{font-family:"Jua",sans-serif;font-weight:400;font-size:19px;margin:8px 0 4px;line-height:1.3;word-break:keep-all;overflow-wrap:anywhere}
+.nb{margin:0;white-space:pre-wrap;overflow-wrap:anywhere;font-size:14.5px}
+.nb.clamp{display:-webkit-box;-webkit-line-clamp:6;-webkit-box-orient:vertical;overflow:hidden}
+.news-f{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:10px}
+.news-f a{color:var(--accent-ink);font-size:14px;text-decoration:none;border-bottom:1px solid currentColor}
+.news-f .sp{flex:1}
+.linkbtn{border:0;background:none;color:var(--ink-soft);font-size:13px;padding:4px 2px}
+nav.tabs button{position:relative}
+nav.tabs .dot{position:absolute;top:6px;right:5px;width:7px;height:7px;border-radius:50%;background:var(--pink)}
 .stamp.pop{animation:pop .35s cubic-bezier(.3,1.8,.5,1)}
 @keyframes pop{0%{transform:scale(.6) rotate(-12deg)}100%{transform:none}}
 @media (prefers-reduced-motion:reduce){.stamp.pop{animation:none}.bar i{transition:none}}
@@ -220,17 +243,15 @@ dialog::backdrop{background:rgba(30,15,45,.45)}
 .steps li:first-child::before{top:50%}.steps li:last-child::before{bottom:50%}.steps li:only-child::before{display:none}
 .steps .no{position:relative;z-index:1;width:36px;height:36px;border-radius:50%;background:var(--paper);border:2px solid var(--line);display:grid;place-items:center;font-family:"Jua",sans-serif;font-size:15px;color:var(--ink-soft)}
 .steps li.owned .no{background:var(--gold);border-color:var(--gold);color:#3A2A00}
-.steps li.want .no{background:var(--pink);border-color:var(--pink);color:var(--on-accent)}
 .steps .tp{width:52px;height:52px;border-radius:10px;background:var(--bg);overflow:hidden;display:grid;place-items:center;color:var(--ink-soft)}
 .steps .tp img{width:100%;height:100%;object-fit:contain}
 .steps .tp svg{width:22px;height:22px;opacity:.5}
 .steps .tn{min-width:0;font-size:14px;line-height:1.35;word-break:keep-all;overflow-wrap:anywhere}
 .steps .tn small{display:block;font-size:12px;color:var(--ink-soft)}
 .steps li.none .tp,.steps li.none .tn{opacity:.42}
-.steps .open{position:absolute;inset:0;border:0;background:transparent;border-radius:12px}
-.steps .stamp{position:relative;top:auto;right:auto;box-shadow:none}
+.steps .open{position:absolute;inset:0;border:0;background:transparent;border-radius:12px;z-index:1}
+.steps .stamp{position:relative;top:auto;left:auto;right:auto;box-shadow:none;z-index:2}
 .steps li.owned .stamp{background:var(--gold);color:#3A2A00}
-.steps li.want .stamp{background:var(--pink);color:var(--on-accent)}
 .look{background:var(--paper);border:2px solid var(--line);border-radius:18px;padding:14px;margin-bottom:10px}
 .look-h{display:flex;justify-content:space-between;align-items:center;gap:8px}
 .look-h h3{font-family:"Jua",sans-serif;font-weight:400;font-size:19px;margin:0}
@@ -277,7 +298,8 @@ textarea.io{width:100%;min-height:110px;padding:10px;border-radius:12px;border:2
   <nav class="tabs" role="tablist">
     <button role="tab" aria-selected="true" data-tab="parts">파츠</button>
     <button role="tab" aria-selected="false" data-tab="track">탄별</button>
-    <button role="tab" aria-selected="false" data-tab="looks">코디</button>
+    <button role="tab" aria-selected="false" data-tab="looks">조합</button>
+    <button role="tab" aria-selected="false" data-tab="info">정보</button>
     <button role="tab" aria-selected="false" data-tab="settings">설정</button>
   </nav>
 
@@ -306,6 +328,12 @@ textarea.io{width:100%;min-height:110px;padding:10px;border-radius:12px;border:2
 
   <section id="v-looks" class="hidden">
     <div id="looks"></div>
+  </section>
+
+  <!-- INFO -->
+  <section id="v-info" class="hidden">
+    <div class="tools"><div class="chips" id="nType" role="group" aria-label="소식 종류"></div></div>
+    <div id="news"></div>
   </section>
 
   <!-- SETTINGS -->
@@ -346,7 +374,7 @@ textarea.io{width:100%;min-height:110px;padding:10px;border-radius:12px;border:2
     </div>
     <div class="card">
       <h3>테마 컬러</h3>
-      <p>포인트 색만 바뀌어요. 원해요 표시, 버튼, 배경의 옅은 색이 함께 따라가요.</p>
+      <p>포인트 색만 바뀌어요. 원해요 하트, 버튼, 배경의 옅은 색이 함께 따라가요.</p>
       <div class="swatches" id="accentSw"></div>
     </div>
     <div class="card">
@@ -357,8 +385,8 @@ textarea.io{width:100%;min-height:110px;padding:10px;border-radius:12px;border:2
     </div>
     <div class="card">
       <h3>초기화</h3>
-      <p>모든 파츠와 코디가 지워져요. 먼저 백업해 두세요.</p>
-      <div class="btns"><button class="btn" id="resetStatus">보유 상태만 모두 미보유로</button><button class="btn danger" id="reset">전부 지우기</button></div>
+      <p>모든 파츠, 조합, 소식이 지워져요. 먼저 백업해 두세요.</p>
+      <div class="btns"><button class="btn" id="resetStatus">보유·원해요 기록만 지우기</button><button class="btn danger" id="reset">전부 지우기</button></div>
     </div>
     <p class="note">팬 제작 비공식 도구예요. 게임 이미지나 공식 자료는 포함하지 않아요.</p>
   </section>
@@ -370,7 +398,7 @@ textarea.io{width:100%;min-height:110px;padding:10px;border-radius:12px;border:2
 <!-- part sheet -->
 <dialog id="dPart" aria-labelledby="dPartT">
   <form class="sheet" method="dialog" id="fPart">
-    <h2 id="dPartT">파츠 등록</h2>
+    <div class="sheet-h"><h2 id="dPartT">파츠 등록</h2><button type="button" class="heartbtn" id="pFav" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20.5s-7.5-4.6-7.5-10.2A4.3 4.3 0 0 1 12 7.6a4.3 4.3 0 0 1 7.5 2.7c0 5.6-7.5 10.2-7.5 10.2z"/></svg><span>원해요</span></button></div>
     <label class="bigpic" id="pImgPv" for="pImg"></label>
     <div class="picbtns"><label class="btn" for="pImg" id="pImgPick">사진 고르기</label><button type="button" class="btn" id="pImgDel">사진 지우기</button></div>
     <input type="file" id="pImg" accept="image/*" class="hidden">
@@ -386,7 +414,7 @@ textarea.io{width:100%;min-height:110px;padding:10px;border-radius:12px;border:2
       <div class="route" id="pRoute"><select id="pAcq" aria-label="획득 경로 종류"></select><select id="pRType" class="rtype" aria-label="랭크 타입"></select><div class="step" id="pStepBox"><input id="pStep" inputmode="numeric" maxlength="4" placeholder="예: 5" aria-label="몇 번째"><span id="pStepLb">번째</span></div><input class="detail" id="pMemo" maxlength="100" placeholder="상세 (선택)" aria-label="획득 경로 상세"></div>
     </div>
     <div class="field"><span class="lb">상태</span>
-      <div class="seg" id="pStatus"><button type="button" data-v="owned">보유</button><button type="button" data-v="want">원해요</button><button type="button" data-v="none">미보유</button></div>
+      <div class="seg" id="pStatus"><button type="button" data-v="owned">보유</button><button type="button" data-v="none">미보유</button></div>
     </div>
     <div class="field"><label for="pNote">메모</label><textarea id="pNote" rows="3" maxlength="500" placeholder="자유롭게 적어 두세요. 예: 이벤트 기간, 같이 쓰기 좋은 파츠, 교환 정보"></textarea></div>
     <div class="actions">
@@ -449,7 +477,7 @@ textarea.io{width:100%;min-height:110px;padding:10px;border-radius:12px;border:2
         <p class="bcount" id="bStepHint" style="margin:6px 0 0">몇 번째인지는 아래 사진 목록에서 한 장씩 적을 수 있어요.<span id="bRTypeHint"> 랭크 타입도 사진마다 바꿀 수 있어요.</span></p>
       </div>
       <div class="field"><span class="lb">상태</span>
-        <div class="seg" id="bStatus"><button type="button" data-v="owned">보유</button><button type="button" data-v="want">원해요</button><button type="button" data-v="none">미보유</button></div>
+        <div style="display:flex;gap:8px"><div class="seg" id="bStatus" style="flex:1"><button type="button" data-v="owned">보유</button><button type="button" data-v="none">미보유</button></div><button type="button" class="heartbtn" id="bFav" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20.5s-7.5-4.6-7.5-10.2A4.3 4.3 0 0 1 12 7.6a4.3 4.3 0 0 1 7.5 2.7c0 5.6-7.5 10.2-7.5 10.2z"/></svg><span>원해요</span></button></div>
       </div>
     </div>
     <p class="bcount" id="bCount"></p>
@@ -461,10 +489,31 @@ textarea.io{width:100%;min-height:110px;padding:10px;border-radius:12px;border:2
   </form>
 </dialog>
 
+<dialog id="dNews" aria-labelledby="dNewsT">
+  <form class="sheet" method="dialog" id="fNews">
+    <h2 id="dNewsT">소식 쓰기</h2>
+    <div class="field"><span class="lb">분류</span>
+      <div class="seg" id="nKind"><button type="button" data-v="update">업데이트 소식</button><button type="button" data-v="game">게임 소식</button></div>
+    </div>
+    <div class="field"><label for="nTitle">제목</label><input id="nTitle" maxlength="60" placeholder="예: 10월 2탄 가동 일정"></div>
+    <div class="row2">
+      <div class="field"><label for="nDate">날짜</label><input id="nDate" type="date"></div>
+      <div class="field"><span class="lb">위에 고정</span><label style="display:flex;align-items:center;gap:6px;padding:10px 0;font-size:14px"><input type="checkbox" id="nPin" style="width:auto"> 맨 위에 두기</label></div>
+    </div>
+    <div class="field"><label for="nBody">내용</label><textarea id="nBody" rows="7" maxlength="3000" placeholder="소식 내용을 적어 주세요"></textarea></div>
+    <div class="field"><label for="nLink">관련 링크 (선택)</label><input id="nLink" type="url" inputmode="url" maxlength="300" placeholder="https://"></div>
+    <div class="actions">
+      <button type="button" class="btn danger" id="nDel">삭제</button>
+      <button type="button" class="btn" id="nCancel">닫기</button>
+      <button type="submit" class="btn primary">올리기</button>
+    </div>
+  </form>
+</dialog>
+
 <dialog id="dLook" aria-labelledby="dLookT">
   <form class="sheet" method="dialog" id="fLook">
-    <h2 id="dLookT">코디 만들기</h2>
-    <div class="field"><label for="lName">코디 이름</label><input id="lName" required maxlength="30" placeholder="예: 라이브용 트윈테일"></div>
+    <h2 id="dLookT">조합 만들기</h2>
+    <div class="field"><label for="lName">조합 이름</label><input id="lName" required maxlength="30" placeholder="예: 라이브용 트윈테일"></div>
     <div id="lSlots"></div>
     <div class="field"><label for="lMemo">메모</label><textarea id="lMemo" rows="2" maxlength="200"></textarea></div>
     <div class="actions">
@@ -489,7 +538,10 @@ const RANK='랭크 달성', RTYPES=['큐트','쿨','섹시','팝'];
 const rtOpts=cur=>`<option value="">타입 선택</option>`+RTYPES.map(x=>`<option ${x===cur?'selected':''}>${x}</option>`).join('');
 const hasStep=a=>a in STEP_LB;
 const ACCENTS=[['핑크','#FF4F9A'],['체리','#D6246E'],['코랄','#FF6F61'],['선샤인','#F2A900'],['민트','#1FB89A'],['스카이','#2F9BEA'],['라벤더','#8E6BF0']];
-const STATUS={owned:'보유',want:'원해요',none:'미보유'};
+const STATUS={owned:'보유',none:'미보유'};
+const HEART='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20.5s-7.5-4.6-7.5-10.2A4.3 4.3 0 0 1 12 7.6a4.3 4.3 0 0 1 7.5 2.7c0 5.6-7.5 10.2-7.5 10.2z"/></svg>';
+const NKIND={update:'업데이트 소식',game:'게임 소식'};
+const NEWS_SEEN='aikatsu-encore-news-seen';
 const $=s=>document.querySelector(s);
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,7);
@@ -530,7 +582,7 @@ const toDataURL=b=>new Promise((res,rej)=>{const r=new FileReader();r.onload=()=
 const fromDataURL=u=>fetch(u).then(r=>r.blob());
 const nameFromFile=f=>f.name.replace(/\.[^.]+$/,'').replace(/[_]+/g,' ').replace(/\s+/g,' ').trim().slice(0,40);
 
-function blank(){return{v:1,cats:[...DEFAULT_CATS],acq:[...DEFAULT_ACQ],parts:[],looks:[],theme:'auto',accent:'#FF4F9A'}}
+function blank(){return{v:1,cats:[...DEFAULT_CATS],acq:[...DEFAULT_ACQ],parts:[],looks:[],news:[],theme:'auto',accent:'#FF4F9A'}}
 function load(){
   try{const raw=localStorage.getItem(KEY);if(raw){const d=JSON.parse(raw);return normalize(d)}}catch(e){}
   return blank();
@@ -541,7 +593,8 @@ function normalize(d){
   if(!/^#[0-9a-f]{6}$/i.test(o.accent||''))o.accent=b.accent;
   o.cats=Array.isArray(o.cats)&&o.cats.length?o.cats.map(String):b.cats;
   o.acq=Array.isArray(o.acq)&&o.acq.length?o.acq.map(String):b.acq;
-  o.parts=Array.isArray(o.parts)?o.parts.filter(p=>p&&(p.name||p.nameJa)).map(p=>({id:p.id||uid(),name:String(p.name||'').slice(0,40),nameJa:String(p.nameJa||'').slice(0,40),note:String(p.note||'').slice(0,500),cat:String(p.cat||'기타'),acq:String(p.acq==='랭크업'?'랭크 달성':(p.acq||'이벤트')),wave:String(p.wave??''),step:String(p.step??'').replace(/\D/g,'').slice(0,4),rtype:RTYPES.includes(p.rtype)?p.rtype:'',status:STATUS[p.status]?p.status:'none',memo:String(p.memo||''),t:p.t||Date.now(),...(typeof p.imgData==='string'&&/^data:image\//.test(p.imgData)?{_img:p.imgData}:{})})):[];
+  o.parts=Array.isArray(o.parts)?o.parts.filter(p=>p&&(p.name||p.nameJa)).map(p=>({id:p.id||uid(),name:String(p.name||'').slice(0,40),nameJa:String(p.nameJa||'').slice(0,40),note:String(p.note||'').slice(0,500),cat:String(p.cat||'기타'),acq:String(p.acq==='랭크업'?'랭크 달성':(p.acq||'이벤트')),wave:String(p.wave??''),step:String(p.step??'').replace(/\D/g,'').slice(0,4),rtype:RTYPES.includes(p.rtype)?p.rtype:'',status:p.status==='owned'?'owned':'none',fav:!!p.fav||p.status==='want',memo:String(p.memo||''),t:p.t||Date.now(),...(typeof p.imgData==='string'&&/^data:image\//.test(p.imgData)?{_img:p.imgData}:{})})):[];
+  o.news=Array.isArray(o.news)?o.news.filter(n=>n&&n.title).map(n=>({id:String(n.id||uid()),kind:NKIND[n.kind]?n.kind:'update',title:String(n.title).slice(0,60),date:/^\d{4}-\d{2}-\d{2}$/.test(n.date||'')?n.date:new Date(n.t||Date.now()).toISOString().slice(0,10),body:String(n.body||'').slice(0,3000),link:/^https?:\/\//i.test(n.link||'')?String(n.link).slice(0,300):'',pin:!!n.pin,t:+n.t||Date.now(),...(n.fromSeed?{fromSeed:true}:{})})):[];
   o.looks=Array.isArray(o.looks)?o.looks.filter(l=>l&&l.name).map(l=>({id:l.id||uid(),name:String(l.name),slots:l.slots&&typeof l.slots==='object'?l.slots:{},memo:String(l.memo||'')})):[];
   // 획득 경로 축소: 쓰지 않는 예전 기본값은 목록에서 빼기
   o.acq=o.acq.map(a=>a==='랭크업'?'랭크 달성':a).filter(a=>!OLD_ACQ.includes(a)||o.parts.some(p=>p.acq===a));
@@ -571,7 +624,7 @@ function applyTheme(){applyAccent();const r=document.documentElement;if(S.theme=
 
 /* meter */
 function renderMeter(){
-  const tot=S.parts.length,own=S.parts.filter(p=>p.status==='owned').length,want=S.parts.filter(p=>p.status==='want').length;
+  const tot=S.parts.length,own=S.parts.filter(p=>p.status==='owned').length,want=S.parts.filter(p=>p.fav).length;
   $('#mNum').innerHTML=own+'<small> / '+tot+'</small>';
   const pct=tot?Math.round(own/tot*100):0;
   $('#mBar i').style.width=pct+'%';$('#mBar').setAttribute('aria-valuenow',pct);$('#mBar').setAttribute('aria-valuetext','보유율 '+pct+'%');
@@ -581,7 +634,7 @@ function renderMeter(){
 /* filters */
 function renderFilters(){
   const base=S.parts.filter(p=>(view.acq==='all'||p.acq===view.acq)&&(view.wave==='all'||p.wave===view.wave));
-  const st=[['all','전체',base.length],['owned','보유',base.filter(p=>p.status==='owned').length],['want','원해요',base.filter(p=>p.status==='want').length],['none','미보유',base.filter(p=>p.status==='none').length]];
+  const st=[['all','전체',base.length],['owned','보유',base.filter(p=>p.status==='owned').length],['none','미보유',base.filter(p=>p.status==='none').length],['fav','원해요',base.filter(p=>p.fav).length]];
   $('#fStatus').innerHTML=st.map(([v,l,n])=>`<button class="chip" data-v="${v}" aria-pressed="${view.status===v}">${l}<b>${n}</b></button>`).join('');
   const cats=[['all','모든 카테고리',base.length]].concat(S.cats.map(c=>{const ps=base.filter(p=>p.cat===c);return[c,c,ps.filter(p=>p.status==='owned').length+'/'+ps.length]}));
   $('#fCat').innerHTML=cats.map(([v,l,n])=>`<button class="chip" data-v="${esc(v)}" aria-pressed="${view.cat===v}">${esc(l)}<b>${n}</b></button>`).join('');
@@ -608,12 +661,12 @@ function tileHTML(p){
   return `<div class="tile ${p.status}" data-id="${p.id}">
     <button class="open" aria-label="${esc(dn(p))} 편집"></button>
     <button class="stamp" data-stamp="${p.id}" aria-label="상태: ${STATUS[p.status]}. 눌러서 바꾸기">${STATUS[p.status]}</button>
-    ${pic}<div class="txt"><div class="nm"${p.name?'':' lang="ja"'}>${esc(dn(p))}</div>${ja}<div class="mt rt">${w?`<span class="wv">${esc(w)}</span>`:''}${route}</div></div></div>`;
+    ${p.fav?`<span class="hb" role="img" aria-label="원해요">${HEART}</span>`:''}${pic}<div class="txt"><div class="nm"${p.name?'':' lang="ja"'}>${esc(dn(p))}</div>${ja}<div class="mt rt">${w?`<span class="wv">${esc(w)}</span>`:''}${route}</div></div></div>`;
 }
 
 function renderList(){
   const q=view.q.trim().toLowerCase();
-  let ps=S.parts.filter(p=>(view.status==='all'||p.status===view.status)&&(view.cat==='all'||p.cat===view.cat)&&(view.acq==='all'||p.acq===view.acq)&&(view.wave==='all'||p.wave===view.wave)&&(!q||(p.name+' '+p.nameJa+' '+p.note+' '+routeLabel(p)+' '+p.memo+' '+waveLabel(p.wave)).toLowerCase().includes(q)));
+  let ps=S.parts.filter(p=>(view.status==='all'||(view.status==='fav'?p.fav:p.status===view.status))&&(view.cat==='all'||p.cat===view.cat)&&(view.acq==='all'||p.acq===view.acq)&&(view.wave==='all'||p.wave===view.wave)&&(!q||(p.name+' '+p.nameJa+' '+p.note+' '+routeLabel(p)+' '+p.memo+' '+waveLabel(p.wave)).toLowerCase().includes(q)));
   ps.sort(byEarliest);
   const el=$('#list');
   if(!S.parts.length){el.innerHTML=`<div class="empty"><strong>아직 등록한 파츠가 없어요</strong>게임에서 얻은 파츠를 [+ 파츠 등록]으로 하나씩 기록해 보세요.<br>친구에게 받은 백업 코드가 있다면 설정 탭에서 불러올 수 있어요.</div>`;return}
@@ -628,7 +681,7 @@ function renderList(){
 function renderLooks(){
   const el=$('#looks');
   const head=`<div class="tools"><p style="margin:0;color:var(--ink-soft);font-size:14px">보유한 파츠로 마이캐 조합을 저장해 두면 게임에서 그대로 맞추기 쉬워요.</p></div>`;
-  if(!S.looks.length){el.innerHTML=head+`<div class="empty"><strong>저장한 코디가 없어요</strong>[+ 코디 만들기]로 첫 조합을 저장해 보세요.</div>`;return}
+  if(!S.looks.length){el.innerHTML=head+`<div class="empty"><strong>저장한 조합이 없어요</strong>[+ 조합 만들기]로 첫 조합을 저장해 보세요.</div>`;return}
   el.innerHTML=head+S.looks.map(l=>{
     const items=S.cats.filter(c=>l.slots[c]).map(c=>{const p=S.parts.find(x=>x.id===l.slots[c]);
       if(!p)return `<li><em>${esc(c)}</em><span class="miss">삭제된 파츠</span></li>`;
@@ -645,12 +698,14 @@ function renderSettings(){
 
 function render(){
   renderMeter();
-  ['parts','track','looks','settings'].forEach(t=>$('#v-'+t).classList.toggle('hidden',view.tab!==t));
+  ['parts','track','looks','info','settings'].forEach(t=>$('#v-'+t).classList.toggle('hidden',view.tab!==t));
   document.querySelectorAll('nav.tabs button').forEach(b=>b.setAttribute('aria-selected',b.dataset.tab===view.tab));
-  const fab=$('#fab');fab.classList.toggle('hidden',view.tab==='settings');$('#fab2').classList.toggle('hidden',!['parts','track'].includes(view.tab));fab.textContent=view.tab==='looks'?'+ 코디 만들기':'+ 파츠 등록';
+  const fab=$('#fab');fab.classList.toggle('hidden',view.tab==='settings');$('#fab2').classList.toggle('hidden',!['parts','track'].includes(view.tab));fab.textContent=view.tab==='looks'?'+ 조합 만들기':view.tab==='info'?'+ 소식 쓰기':'+ 파츠 등록';
   if(view.tab==='parts'){renderFilters();renderList()}
   if(view.tab==='track')renderTrack();
   if(view.tab==='looks')renderLooks();
+  if(view.tab==='info'){renderNews();markSeen()}
+  renderDot();
   if(view.tab==='settings')renderSettings();
 }
 
@@ -681,7 +736,7 @@ function renderTrack(){
         <button class="open" aria-label="${esc(dn(p))} 편집" data-open="${p.id}"></button>
         <span class="no" aria-hidden="true">${isStep&&p.step?esc(p.step):'★'}</span>
         <span class="tp">${IMG.has(p.id)?`<img src="${IMG.get(p.id)}" alt="" loading="lazy">`:CAM}</span>
-        <span class="tn">${esc(dn(p))}${p.name&&p.nameJa?` <small lang="ja">${esc(p.nameJa)}</small>`:''}<small>${esc(p.cat)}${p.memo?' / '+esc(p.memo):''}</small></span>
+        <span class="tn">${esc(dn(p))}${p.fav?`<span class="hs" role="img" aria-label="원해요">${HEART}</span>`:''}${p.name&&p.nameJa?` <small lang="ja">${esc(p.nameJa)}</small>`:''}<small>${esc(p.cat)}${p.memo?' / '+esc(p.memo):''}</small></span>
         <button class="stamp" data-stamp="${p.id}" aria-label="상태: ${STATUS[p.status]}. 눌러서 바꾸기">${STATUS[p.status]}</button>
       </li>`).join('')}</ol></section>`}).join('')||`<div class="empty"><strong>이 탄에는 파츠가 없어요</strong></div>`;
 }
@@ -689,7 +744,7 @@ $('#tWave').addEventListener('click',e=>{const b=e.target.closest('button');if(!
 $('#tSec').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;view.tsec=b.dataset.v;renderTrack()});
 $('#track').addEventListener('click',e=>{
   const st=e.target.closest('[data-stamp]');
-  if(st){const p=S.parts.find(x=>x.id===st.dataset.stamp);p.status={none:'owned',owned:'want',want:'none'}[p.status];save();renderMeter();renderTrack();
+  if(st){const p=S.parts.find(x=>x.id===st.dataset.stamp);p.status=p.status==='owned'?'none':'owned';save();renderMeter();renderTrack();
     const ns=$('#track').querySelector('[data-stamp="'+p.id+'"]');if(ns){ns.classList.add('pop');ns.focus({preventScroll:true})}return}
   const o=e.target.closest('[data-open]');if(o)openPart(o.dataset.open);
 });
@@ -708,14 +763,18 @@ function openPart(id,pre){
   $('#pDel').classList.toggle('hidden',!p);
   pImg=undefined;showPv(p&&IMG.get(p.id));
   if(!p&&pre){$('#pWave').value=pre.wave||'';if(pre.acq&&S.acq.includes(pre.acq))$('#pAcq').value=pre.acq;$('#pRType').innerHTML=rtOpts(pre.rtype||'');syncStep()}
+  setPFav(!!(p&&p.fav));
   $('#dPart').showModal();setTimeout(()=>$('#pName').focus(),50);
 }
+let pFav=false;
+function setPFav(v){pFav=v;$('#pFav').setAttribute('aria-pressed',v)}
+$('#pFav').onclick=()=>{setPFav(!pFav);const s=$('#pFav svg');if(pFav){s.style.transform='scale(1.35)';setTimeout(()=>s.style.transform='',180)}};
 function setPStatus(v){pStatus=v;document.querySelectorAll('#pStatus button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.v===v))}
 $('#pStatus').addEventListener('click',e=>{const b=e.target.closest('button');if(b)setPStatus(b.dataset.v)});
 $('#fPart').addEventListener('submit',e=>{
   e.preventDefault();const name=$('#pName').value.trim(),nameJa=$('#pNameJa').value.trim();
   if(!name&&!nameJa){toast('파츠 이름이나 일본어 이름 중 하나는 적어 주세요');$('#pName').focus();return}
-  const data={name,nameJa,note:$('#pNote').value.trim(),cat:$('#pCat').value,acq:$('#pAcq').value,step:hasStep($('#pAcq').value)?$('#pStep').value.replace(/\D/g,'').slice(0,4):'',rtype:$('#pAcq').value===RANK?$('#pRType').value:'',wave:$('#pWave').value.trim().replace(/\s*탄$/,''),status:pStatus,memo:$('#pMemo').value.trim()};
+  const data={name,nameJa,note:$('#pNote').value.trim(),cat:$('#pCat').value,acq:$('#pAcq').value,step:hasStep($('#pAcq').value)?$('#pStep').value.replace(/\D/g,'').slice(0,4):'',rtype:$('#pAcq').value===RANK?$('#pRType').value:'',wave:$('#pWave').value.trim().replace(/\s*탄$/,''),status:pStatus,fav:pFav,memo:$('#pMemo').value.trim()};
   let id=editId;
   if(editId){Object.assign(S.parts.find(x=>x.id===editId),data);toast('저장했어요')}
   else{const dup=S.parts.some(p=>dn(p)===dn(data)&&p.cat===data.cat);id=uid();S.parts.push({id,t:Date.now(),...data});toast(dup?'같은 이름의 파츠가 이미 있어요. 등록은 했어요':'등록했어요')}
@@ -738,10 +797,13 @@ function openBulk(files){
   const opt=(arr,cur)=>arr.map(x=>`<option ${x===cur?'selected':''}>${esc(x)}</option>`).join('');
   $('#bCat').innerHTML=opt(S.cats,view.cat!=='all'?view.cat:S.cats[0]);
   $('#bAcq').innerHTML=opt(S.acq,view.acq!=='all'?view.acq:S.acq[0]);
-  $('#bWave').value=view.wave!=='all'?view.wave:'';$('#bRType').innerHTML=rtOpts('');$('#bMemo').value='';setBStatus('owned');
+  $('#bWave').value=view.wave!=='all'?view.wave:'';$('#bRType').innerHTML=rtOpts('');$('#bMemo').value='';setBStatus('owned');setBFav(false);
   renderBulk();setBTarget(bTarget);if(!$('#dBulk').open)$('#dBulk').showModal();
   if(files&&files.length)addBulk(files);
 }
+let bFav=false;
+function setBFav(v){bFav=v;$('#bFav').setAttribute('aria-pressed',v)}
+$('#bFav').onclick=()=>setBFav(!bFav);
 function setBStatus(v){bStatus=v;document.querySelectorAll('#bStatus button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.v===v))}
 $('#bCat').addEventListener('change',()=>renderBulk());
 $('#bAcq').addEventListener('change',()=>renderBulk());
@@ -783,7 +845,7 @@ $('#bCancel').onclick=()=>$('#dBulk').close();
 $('#dBulk').addEventListener('close',()=>{bulk.forEach(b=>URL.revokeObjectURL(b.url));bulk=[]});
 $('#fBulk').addEventListener('submit',async e=>{
   e.preventDefault();if(!bulk.length)return;
-  const common={cat:$('#bCat').value,acq:$('#bAcq').value,wave:$('#bWave').value.trim().replace(/\s*탄$/,''),memo:$('#bMemo').value.trim(),status:bStatus};
+  const common={cat:$('#bCat').value,acq:$('#bAcq').value,wave:$('#bWave').value.trim().replace(/\s*탄$/,''),memo:$('#bMemo').value.trim(),status:bStatus,fav:bFav};
   let add=0,link=0,fail=0;const jobs=[];
   for(const b of bulk){const m=b.link&&matchOf(b.name);
     if(m){jobs.push(setImg(m.id,b.blob).then(()=>link++,()=>fail++))}
@@ -800,10 +862,60 @@ document.addEventListener('dragleave',()=>{if(dragDepth&&--dragDepth===0)documen
 document.addEventListener('dragover',e=>{if(hasFiles(e))e.preventDefault()});
 document.addEventListener('drop',e=>{if(!hasFiles(e))return;e.preventDefault();dragDepth=0;document.body.classList.remove('dropping');if(view.tab==='parts'&&!document.querySelector('dialog[open]'))openBulk(e.dataTransfer.files)});
 
+/* info: 소식 */
+let editNews=null,nKind='update';view.ntype='all';
+const fmtDate=d=>d?d.replace(/-/g,'.'):'';
+const today=()=>new Date(Date.now()-new Date().getTimezoneOffset()*60000).toISOString().slice(0,10);
+function newsSorted(){return S.news.slice().sort((a,b)=>(b.pin-a.pin)||b.date.localeCompare(a.date)||(b.t-a.t))}
+function renderNews(){
+  const all=S.news;
+  $('#nType').innerHTML=[['all','전체',all.length],['update','업데이트 소식',all.filter(n=>n.kind==='update').length],['game','게임 소식',all.filter(n=>n.kind==='game').length]]
+    .map(([v,l,c])=>`<button class="chip" data-v="${v}" aria-pressed="${view.ntype===v}">${l}<b>${c}</b></button>`).join('');
+  const list=newsSorted().filter(n=>view.ntype==='all'||n.kind===view.ntype);
+  const el=$('#news');
+  if(!all.length){el.innerHTML=`<div class="empty"><strong>아직 올라온 소식이 없어요</strong>[+ 소식 쓰기]로 앱 업데이트나 아이카츠! 앙코르 게임 소식을 올려 보세요.<br>GitHub 사이트의 parts-data.json에 함께 담아 올리면 모두에게 보여요.</div>`;return}
+  if(!list.length){el.innerHTML=`<div class="empty"><strong>이 분류의 소식이 없어요</strong></div>`;return}
+  el.innerHTML=list.map(n=>{const long=n.body.length>220||n.body.split('\n').length>6;
+    return `<article class="news${n.pin?' pin':''}"><div class="news-h">${n.pin?'<span class="ntag pin">고정</span>':''}<span class="ntag ${n.kind}">${NKIND[n.kind]}</span><time datetime="${n.date}">${fmtDate(n.date)}</time></div>
+    <h3>${esc(n.title)}</h3>${n.body?`<p class="nb${long?' clamp':''}">${esc(n.body)}</p>`:''}
+    <div class="news-f">${long?`<button class="linkbtn" data-more>더 읽기</button>`:''}${n.link?`<a href="${esc(n.link)}" target="_blank" rel="noopener noreferrer">관련 링크 열기 ↗</a>`:''}<span class="sp"></span><button class="linkbtn" data-news="${esc(n.id)}">편집</button></div></article>`}).join('');
+}
+function latestNewsT(){return S.news.reduce((m,n)=>Math.max(m,n.t||0),0)}
+function markSeen(){try{localStorage.setItem(NEWS_SEEN,String(latestNewsT()))}catch(e){}}
+function renderDot(){let seen=0;try{seen=+localStorage.getItem(NEWS_SEEN)||0}catch(e){}
+  const b=document.querySelector('nav.tabs [data-tab=info]');const on=view.tab!=='info'&&latestNewsT()>seen;
+  const d=b.querySelector('.dot');if(on&&!d)b.insertAdjacentHTML('beforeend','<span class="dot" aria-label="새 소식"></span>');if(!on&&d)d.remove()}
+function setNKind(v){nKind=v;document.querySelectorAll('#nKind button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.v===v))}
+$('#nKind').addEventListener('click',e=>{const b=e.target.closest('button');if(b)setNKind(b.dataset.v)});
+function openNews(id){
+  editNews=id||null;const n=id?S.news.find(x=>x.id===id):null;
+  $('#dNewsT').textContent=n?'소식 편집':'소식 쓰기';
+  setNKind(n?n.kind:(view.ntype==='game'?'game':'update'));
+  $('#nTitle').value=n?n.title:'';$('#nBody').value=n?n.body:'';$('#nLink').value=n?n.link:'';$('#nPin').checked=!!(n&&n.pin);
+  $('#nDate').value=n?n.date:today();
+  $('#nDel').classList.toggle('hidden',!n);
+  $('#dNews').showModal();setTimeout(()=>$('#nTitle').focus(),50);
+}
+$('#fNews').addEventListener('submit',e=>{
+  e.preventDefault();const title=$('#nTitle').value.trim();if(!title){toast('제목을 적어 주세요');return $('#nTitle').focus()}
+  let link=$('#nLink').value.trim();if(link&&!/^https?:\/\//i.test(link))link='https://'+link;
+  const data={kind:nKind,title,date:$('#nDate').value||today(),body:$('#nBody').value.trim(),link,pin:$('#nPin').checked,t:Date.now()};
+  const was=editNews;
+  if(editNews)Object.assign(S.news.find(x=>x.id===editNews),data);else S.news.push({id:uid(),...data});
+  save();markSeen();$('#dNews').close();render();toast(was?'소식을 고쳤어요':'소식을 올렸어요');
+});
+$('#nCancel').onclick=()=>$('#dNews').close();
+$('#nDel').onclick=()=>{if(!confirm('이 소식을 삭제할까요?'))return;S.news=S.news.filter(x=>x.id!==editNews);save();$('#dNews').close();render();toast('삭제했어요')};
+$('#nType').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;view.ntype=b.dataset.v;renderNews()});
+$('#news').addEventListener('click',e=>{
+  const m=e.target.closest('[data-more]');if(m){const p=m.closest('.news').querySelector('.nb');const open=p.classList.toggle('clamp');m.textContent=open?'더 읽기':'접기';return}
+  const ed=e.target.closest('[data-news]');if(ed)openNews(ed.dataset.news);
+});
+
 /* look dialog */
 function openLook(id){
   editLook=id||null;const l=id?S.looks.find(x=>x.id===id):null;
-  $('#dLookT').textContent=l?'코디 편집':'코디 만들기';
+  $('#dLookT').textContent=l?'조합 편집':'조합 만들기';
   $('#lName').value=l?l.name:'';$('#lMemo').value=l?l.memo:'';
   $('#lSlots').innerHTML=S.cats.map((c,i)=>{const ps=S.parts.filter(p=>p.cat===c);if(!ps.length)return'';
     const cur=l&&l.slots[c]||'';
@@ -817,14 +929,14 @@ $('#fLook').addEventListener('submit',e=>{
   const slots={};document.querySelectorAll('#lSlots select').forEach(s=>{if(s.value)slots[s.dataset.cat]=s.value});
   const data={name,slots,memo:$('#lMemo').value.trim()};
   if(editLook)Object.assign(S.looks.find(x=>x.id===editLook),data);else S.looks.push({id:uid(),...data});
-  save();$('#dLook').close();render();toast('코디를 저장했어요');
+  save();$('#dLook').close();render();toast('조합을 저장했어요');
 });
 $('#lCancel').onclick=()=>$('#dLook').close();
-$('#lDel').onclick=()=>{if(!confirm('이 코디를 삭제할까요?'))return;S.looks=S.looks.filter(x=>x.id!==editLook);save();$('#dLook').close();render();toast('삭제했어요')};
+$('#lDel').onclick=()=>{if(!confirm('이 조합을 삭제할까요?'))return;S.looks=S.looks.filter(x=>x.id!==editLook);save();$('#dLook').close();render();toast('삭제했어요')};
 
 /* events */
 document.querySelector('nav.tabs').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;view.tab=b.dataset.tab;render();window.scrollTo({top:0})});
-$('#fab').onclick=()=>{if(view.tab==='looks')return openLook();
+$('#fab').onclick=()=>{if(view.tab==='looks')return openLook();if(view.tab==='info')return openNews();
   if(view.tab==='track'&&view.twave!==null){const k=view.tsec;let pre={wave:view.twave};
     if(k!=='all'){if(k.startsWith('rank:'))Object.assign(pre,{acq:RANK,rtype:k.slice(5)});else pre.acq=k.slice(4)}
     return openPart(null,pre)}
@@ -836,7 +948,7 @@ $('#fStatus').addEventListener('click',e=>{const b=e.target.closest('button');if
 $('#fCat').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;view.cat=b.dataset.v;render()});
 $('#list').addEventListener('click',e=>{
   const st=e.target.closest('[data-stamp]');
-  if(st){const p=S.parts.find(x=>x.id===st.dataset.stamp);p.status={none:'owned',owned:'want',want:'none'}[p.status];save();
+  if(st){const p=S.parts.find(x=>x.id===st.dataset.stamp);p.status=p.status==='owned'?'none':'owned';save();
     renderMeter();renderFilters();renderList();
     const ns=document.querySelector('[data-stamp="'+p.id+'"]');if(ns){ns.classList.add('pop');ns.focus({preventScroll:true})}return}
   const t=e.target.closest('.tile');if(t)openPart(t.dataset.id);
@@ -882,9 +994,10 @@ async function doImport(text,merge=$('#imMerge').checked){
   if(merge){
     const key=p=>p.cat+'|'+dn(p);const have=new Map(S.parts.map(p=>[key(p),p]));let add=0;
     inc.parts.forEach(p=>{const img=p._img;delete p._img;const h=have.get(key(p));
-      if(h){if(p.status==='owned'||(p.status==='want'&&h.status==='none'))h.status=p.status;if(img&&!IMG.has(h.id))imgs.push([h.id,img])}
+      if(h){if(p.status==='owned')h.status='owned';if(p.fav)h.fav=true;if(img&&!IMG.has(h.id))imgs.push([h.id,img])}
       else{const id=uid();S.parts.push({...p,id});add++;if(img)imgs.push([id,img])}});
     inc.cats.forEach(c=>{if(!S.cats.includes(c))S.cats.push(c)});inc.acq.forEach(a=>{if(!S.acq.includes(a))S.acq.push(a)});
+    inc.news.forEach(n=>{if(!S.news.some(x=>x.id===n.id))S.news.push(n)});
     msg=`${add}개 파츠를 합쳤어요`;
   }else{if(!confirm('지금 목록을 지우고 불러온 내용으로 바꿀까요?'))return;
     await clearImgs();inc.parts.forEach(p=>{if(p._img)imgs.push([p.id,p._img]);delete p._img});S=inc;msg='불러왔어요'}
@@ -894,8 +1007,8 @@ async function doImport(text,merge=$('#imMerge').checked){
 }
 $('#imText').onclick=()=>{const t=$('#io').value.trim();if(t)doImport(t);else toast('먼저 백업 코드를 붙여넣어 주세요')};
 $('#imFile').addEventListener('change',e=>{const f=e.target.files[0];if(!f)return;f.text().then(doImport);e.target.value=''});
-$('#resetStatus').onclick=()=>{if(!confirm('파츠 정보는 그대로 두고 보유 상태만 모두 미보유로 바꿀까요?'))return;S.parts.forEach(p=>p.status='none');save();render();toast('보유 상태를 모두 미보유로 바꿨어요')};
-$('#reset').onclick=()=>{if(!confirm('모든 파츠와 코디를 지울까요? 되돌릴 수 없어요.'))return;const th=S.theme,ac=S.accent;S=blank();S.theme=th;S.accent=ac;save();clearImgs();render();toast('모두 지웠어요')};
+$('#resetStatus').onclick=()=>{if(!confirm('파츠 정보는 그대로 두고 보유 상태와 원해요 하트를 모두 지울까요?'))return;S.parts.forEach(p=>{p.status='none';p.fav=false});save();render();toast('보유·원해요 기록을 지웠어요')};
+$('#reset').onclick=()=>{if(!confirm('모든 파츠, 조합, 소식을 지울까요? 되돌릴 수 없어요.'))return;const th=S.theme,ac=S.accent;S=blank();S.theme=th;S.accent=ac;save();clearImgs();render();toast('모두 지웠어요')};
 
 let importMode='merge';
 function setMode(v){importMode=v;document.querySelectorAll('#mMode button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.v===v))}
@@ -920,7 +1033,7 @@ $('#dMore').addEventListener('click',async e=>{
 });
 $('#pasteCancel').onclick=()=>$('#dPaste').close();
 $('#fPaste').addEventListener('submit',async e=>{e.preventDefault();const t=$('#pasteIo').value.trim();if(!t)return toast('먼저 목록 코드를 붙여넣어 주세요');$('#dPaste').close();await doImport(t,importMode==='merge')});
-['#dPart','#dLook','#dBulk','#dMore','#dPaste'].forEach(s=>$(s).addEventListener('click',e=>{if(e.target===e.currentTarget)e.currentTarget.close()}));
+['#dPart','#dLook','#dBulk','#dMore','#dPaste','#dNews'].forEach(s=>$(s).addEventListener('click',e=>{if(e.target===e.currentTarget)e.currentTarget.close()}));
 applyTheme();render();
 const SEED_URL='./parts-data.json', SEED_KEY='aikatsu-encore-seed';
 function hashStr(s){let h=5381;for(let i=0;i<s.length;i++)h=((h<<5)+h+s.charCodeAt(i))|0;return (h>>>0).toString(36)+'-'+s.length}
@@ -934,6 +1047,7 @@ async function applySeed(){
   const inc=normalize(d);const imgs=[];let add=0,upd=0,msg;
   if(!S.parts.length&&!last){
     inc.parts.forEach(p=>{if(p._img)imgs.push([p.id,p._img]);delete p._img});
+    inc.news.forEach(n=>n.fromSeed=true);
     S=inc;add=S.parts.length;msg=`기본 파츠 ${add}개를 불러왔어요`;
   }else{
     const F=['name','nameJa','cat','acq','step','rtype','wave','memo'];
@@ -942,7 +1056,10 @@ async function applySeed(){
       if(h){const before=F.map(k=>h[k]).join('|');F.forEach(k=>h[k]=p[k]);if(!h.note&&p.note)h.note=p.note;if(F.map(k=>h[k]).join('|')!==before)upd++;if(img&&!IMG.has(h.id))imgs.push([h.id,img])}
       else{S.parts.push(p);add++;if(img)imgs.push([p.id,img])}});
     inc.cats.forEach(c=>{if(!S.cats.includes(c))S.cats.push(c)});inc.acq.forEach(a=>{if(!S.acq.includes(a))S.acq.push(a)});
-    msg=(add||upd)?[add?`새 파츠 ${add}개`:'',upd?`정보 ${upd}개`:''].filter(Boolean).join(', ')+'가 업데이트됐어요':'';
+    const nids=new Set(inc.news.map(n=>n.id));let nn=0;
+    S.news=S.news.filter(n=>!n.fromSeed||nids.has(n.id));
+    inc.news.forEach(n=>{const h=S.news.find(x=>x.id===n.id);if(h)Object.assign(h,n,{fromSeed:true});else{S.news.push({...n,fromSeed:true});nn++}});
+    msg=(add||upd||nn)?[add?`새 파츠 ${add}개`:'',upd?`파츠 정보 ${upd}개`:'',nn?`새 소식 ${nn}개`:''].filter(Boolean).join(', ')+'가 업데이트됐어요':'';
   }
   save();
   for(const [id,u] of imgs){try{await setImg(id,await fromDataURL(u))}catch(e){}}
