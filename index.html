@@ -143,6 +143,26 @@ nav.tabs button[aria-selected="true"]{background:var(--ink);color:var(--bg)}
 .heartbtn svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.8;transition:transform .2s}
 .heartbtn[aria-pressed="true"]{border-color:var(--pink);background:var(--pink-soft);color:var(--accent-ink)}
 .heartbtn[aria-pressed="true"] svg{fill:var(--pink);stroke:var(--pink)}
+.pv-top{display:flex;gap:14px;align-items:center;margin-bottom:14px}
+.pv-pic{width:96px;height:96px;flex:none;border-radius:16px;background:var(--bg);border:2px solid var(--line);overflow:hidden;display:grid;place-items:center;color:var(--ink-soft)}
+.pv-pic img{width:100%;height:100%;object-fit:contain}
+.pv-pic svg{width:30px;height:30px;opacity:.5}
+.pv-pic.owned{border-color:var(--gold)}
+.pv-names{min-width:0}
+.pv-names h2{font-family:"Jua",sans-serif;font-weight:400;font-size:24px;margin:0;line-height:1.25;word-break:keep-all;overflow-wrap:anywhere}
+.pv-names p{margin:3px 0 0;font-size:14px;color:var(--ink-soft);overflow-wrap:anywhere}
+.pv-names .pv-cat{display:inline-block;margin-top:6px;font-size:12px;background:var(--bg);border-radius:8px;padding:2px 8px;color:var(--ink-soft)}
+.pv-info{margin:0;background:var(--bg);border-radius:14px;padding:4px 14px}
+.pv-info>div{display:grid;grid-template-columns:76px 1fr;gap:10px;padding:9px 0;border-bottom:1px dashed var(--line);align-items:baseline}
+.pv-info>div:last-child{border-bottom:0}
+.pv-info dt{font-size:13px;color:var(--ink-soft)}
+.pv-info dd{margin:0;font-size:15px;overflow-wrap:anywhere}
+.pv-info .wv{display:inline-block;font-family:"Jua",sans-serif;font-size:13px;background:var(--pink-soft);color:var(--accent-ink);border-radius:8px;padding:1px 8px}
+.pv-info .ty{font-size:12px;padding:1px 6px}
+.pv-act{display:flex;gap:8px;margin-top:16px;align-items:stretch}
+.pv-act .seg{flex:1}
+.pv-act .seg button{padding:11px 4px;font-family:"Jua",sans-serif;font-size:16px}
+.pv-act .seg button[data-v="owned"][aria-pressed="true"]{background:var(--gold);border-color:var(--gold);color:#3A2A00}
 .news{background:var(--paper);border:2px solid var(--line);border-radius:18px;padding:14px 16px;margin-bottom:10px}
 .news.pin{border-color:var(--pink)}
 .news-h{display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-size:12px;color:var(--ink-soft)}
@@ -489,6 +509,28 @@ textarea.io{width:100%;min-height:110px;padding:10px;border-radius:12px;border:2
   </form>
 </dialog>
 
+<dialog id="dView" aria-labelledby="vName">
+  <div class="sheet">
+    <div class="pv-top">
+      <div class="pv-pic" id="vPic"></div>
+      <div class="pv-names"><h2 id="vName"></h2><p id="vJa" lang="ja"></p><span class="pv-cat" id="vCat"></span></div>
+    </div>
+    <dl class="pv-info">
+      <div><dt>탄</dt><dd id="vWave"></dd></div>
+      <div><dt>획득 경로</dt><dd id="vRoute"></dd></div>
+      <div id="vNoteRow"><dt>메모</dt><dd id="vNote" style="white-space:pre-wrap"></dd></div>
+    </dl>
+    <div class="pv-act">
+      <div class="seg" id="vStatus" role="group" aria-label="보유 상태"><button type="button" data-v="owned">보유</button><button type="button" data-v="none">미보유</button></div>
+      <button type="button" class="heartbtn" id="vFav" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20.5s-7.5-4.6-7.5-10.2A4.3 4.3 0 0 1 12 7.6a4.3 4.3 0 0 1 7.5 2.7c0 5.6-7.5 10.2-7.5 10.2z"/></svg><span>원해요</span></button>
+    </div>
+    <div class="actions">
+      <button type="button" class="btn" id="vClose">닫기</button>
+      <button type="button" class="btn primary" id="vEdit">정보 수정</button>
+    </div>
+  </div>
+</dialog>
+
 <dialog id="dNews" aria-labelledby="dNewsT">
   <form class="sheet" method="dialog" id="fNews">
     <h2 id="dNewsT">소식 쓰기</h2>
@@ -659,7 +701,7 @@ function tileHTML(p){
   const pic=IMG.has(p.id)?`<span class="pic"><img src="${IMG.get(p.id)}" alt="" loading="lazy"></span>`:`<span class="pic none">${CAM}사진 없음</span>`;
   const ja=p.name&&p.nameJa?`<div class="ja" lang="ja">${esc(p.nameJa)}</div>`:'';
   return `<div class="tile ${p.status}" data-id="${p.id}">
-    <button class="open" aria-label="${esc(dn(p))} 편집"></button>
+    <button class="open" aria-label="${esc(dn(p))} 정보 보기"></button>
     <button class="stamp" data-stamp="${p.id}" aria-label="상태: ${STATUS[p.status]}. 눌러서 바꾸기">${STATUS[p.status]}</button>
     ${p.fav?`<span class="hb" role="img" aria-label="원해요">${HEART}</span>`:''}${pic}<div class="txt"><div class="nm"${p.name?'':' lang="ja"'}>${esc(dn(p))}</div>${ja}<div class="mt rt">${w?`<span class="wv">${esc(w)}</span>`:''}${route}</div></div></div>`;
 }
@@ -706,6 +748,7 @@ function render(){
   if(view.tab==='looks')renderLooks();
   if(view.tab==='info'){renderNews();markSeen()}
   renderDot();
+  if($('#dView').open)fillView();
   if(view.tab==='settings')renderSettings();
 }
 
@@ -733,7 +776,7 @@ function renderTrack(){
     return `<section class="trk"><div class="trk-h"><h3>${esc(wl)} ${secTitle(k)}</h3><span class="cnt">${own} / ${ps.length} 보유</span></div>
       <div class="minibar" aria-hidden="true"><i style="width:${ps.length?own/ps.length*100:0}%"></i></div>
       <ol class="steps">${ps.map(p=>`<li class="${p.status}">
-        <button class="open" aria-label="${esc(dn(p))} 편집" data-open="${p.id}"></button>
+        <button class="open" aria-label="${esc(dn(p))} 정보 보기" data-open="${p.id}"></button>
         <span class="no" aria-hidden="true">${isStep&&p.step?esc(p.step):'★'}</span>
         <span class="tp">${IMG.has(p.id)?`<img src="${IMG.get(p.id)}" alt="" loading="lazy">`:CAM}</span>
         <span class="tn">${esc(dn(p))}${p.fav?`<span class="hs" role="img" aria-label="원해요">${HEART}</span>`:''}${p.name&&p.nameJa?` <small lang="ja">${esc(p.nameJa)}</small>`:''}<small>${esc(p.cat)}${p.memo?' / '+esc(p.memo):''}</small></span>
@@ -746,8 +789,30 @@ $('#track').addEventListener('click',e=>{
   const st=e.target.closest('[data-stamp]');
   if(st){const p=S.parts.find(x=>x.id===st.dataset.stamp);p.status=p.status==='owned'?'none':'owned';save();renderMeter();renderTrack();
     const ns=$('#track').querySelector('[data-stamp="'+p.id+'"]');if(ns){ns.classList.add('pop');ns.focus({preventScroll:true})}return}
-  const o=e.target.closest('[data-open]');if(o)openPart(o.dataset.open);
+  const o=e.target.closest('[data-open]');if(o)openView(o.dataset.open);
 });
+
+/* part view (파츠 누르면 뜨는 정보 화면) */
+let viewId=null,returnTo=null;
+function fillView(){
+  const p=S.parts.find(x=>x.id===viewId);if(!p){if($('#dView').open)$('#dView').close();return}
+  const pic=$('#vPic');pic.className='pv-pic'+(p.status==='owned'?' owned':'');pic.innerHTML=IMG.has(p.id)?`<img src="${IMG.get(p.id)}" alt="${esc(dn(p))} 사진">`:CAM;
+  $('#vName').textContent=p.name||p.nameJa||'이름 없는 파츠';$('#vName').lang=p.name?'ko':'ja';
+  const ja=p.name&&p.nameJa?p.nameJa:'';$('#vJa').textContent=ja;$('#vJa').classList.toggle('hidden',!ja);
+  $('#vCat').textContent=p.cat;
+  $('#vWave').innerHTML=p.wave?`<span class="wv">${esc(waveLabel(p.wave))}</span>`:'<span style="color:var(--ink-soft)">미입력</span>';
+  $('#vRoute').innerHTML=routeHTML(p)||'<span style="color:var(--ink-soft)">미입력</span>';
+  $('#vNote').textContent=p.note||'';$('#vNoteRow').classList.toggle('hidden',!p.note);
+  document.querySelectorAll('#vStatus button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.v===p.status));
+  $('#vFav').setAttribute('aria-pressed',!!p.fav);
+}
+function openView(id){viewId=id;fillView();if(!$('#dView').open)$('#dView').showModal()}
+$('#vStatus').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;const p=S.parts.find(x=>x.id===viewId);if(!p||p.status===b.dataset.v)return;p.status=b.dataset.v;save();render();toast(p.status==='owned'?'보유로 바꿨어요':'미보유로 바꿨어요')});
+$('#vFav').onclick=()=>{const p=S.parts.find(x=>x.id===viewId);if(!p)return;p.fav=!p.fav;save();render();
+  if(p.fav){const s=$('#vFav svg');s.style.transform='scale(1.35)';setTimeout(()=>s.style.transform='',180)}};
+$('#vClose').onclick=()=>$('#dView').close();
+$('#vEdit').onclick=()=>{const id=viewId;returnTo=id;$('#dView').close();openPart(id)};
+$('#dPart').addEventListener('close',()=>{const id=returnTo;returnTo=null;if(id&&S.parts.some(p=>p.id===id))openView(id)});
 
 /* part dialog */
 function openPart(id,pre){
@@ -951,7 +1016,7 @@ $('#list').addEventListener('click',e=>{
   if(st){const p=S.parts.find(x=>x.id===st.dataset.stamp);p.status=p.status==='owned'?'none':'owned';save();
     renderMeter();renderFilters();renderList();
     const ns=document.querySelector('[data-stamp="'+p.id+'"]');if(ns){ns.classList.add('pop');ns.focus({preventScroll:true})}return}
-  const t=e.target.closest('.tile');if(t)openPart(t.dataset.id);
+  const t=e.target.closest('.tile');if(t)openView(t.dataset.id);
 });
 $('#looks').addEventListener('click',e=>{const b=e.target.closest('[data-look]');if(b)openLook(b.dataset.look)});
 $('#addCat').onclick=()=>{const v=$('#newCat').value.trim();if(!v)return;if(S.cats.includes(v))return toast('이미 있는 카테고리예요');S.cats.push(v);$('#newCat').value='';save();render()};
@@ -1033,7 +1098,7 @@ $('#dMore').addEventListener('click',async e=>{
 });
 $('#pasteCancel').onclick=()=>$('#dPaste').close();
 $('#fPaste').addEventListener('submit',async e=>{e.preventDefault();const t=$('#pasteIo').value.trim();if(!t)return toast('먼저 목록 코드를 붙여넣어 주세요');$('#dPaste').close();await doImport(t,importMode==='merge')});
-['#dPart','#dLook','#dBulk','#dMore','#dPaste','#dNews'].forEach(s=>$(s).addEventListener('click',e=>{if(e.target===e.currentTarget)e.currentTarget.close()}));
+['#dPart','#dLook','#dBulk','#dMore','#dPaste','#dNews','#dView'].forEach(s=>$(s).addEventListener('click',e=>{if(e.target===e.currentTarget)e.currentTarget.close()}));
 applyTheme();render();
 const SEED_URL='./parts-data.json', SEED_KEY='aikatsu-encore-seed';
 function hashStr(s){let h=5381;for(let i=0;i<s.length;i++)h=((h<<5)+h+s.charCodeAt(i))|0;return (h>>>0).toString(36)+'-'+s.length}
