@@ -570,6 +570,9 @@ textarea.io{width:100%;min-height:110px;padding:10px;border-radius:12px;border:2
 
 <script>
 (function(){
+// 글자 정리: 아이폰·맥 파일 이름은 한글/일본어가 자모로 쪼개진(NFD) 채로 오기 때문에
+// 겉보기엔 같아도 다른 글자로 취급돼요. 모든 이름을 표준형(NFC)으로 맞춰요.
+const nk=s=>String(s??'').normalize('NFC').replace(/[\u200B-\u200D\u2060\uFEFF]/g,'').replace(/\s+/g,' ').trim();
 const KEY='aikatsu-encore-parts-v1';
 const DEFAULT_CATS=['페이스','보이스','헤어 파츠','헤어 컬러','아이 컬러','메이크업','원 포인트','헤어 데코','기타'];
 const DEFAULT_ACQ=['기본','이벤트','스탬프','랭크 달성'];
@@ -623,7 +626,7 @@ async function shrink(file,max=360){
 }
 const toDataURL=b=>new Promise((res,rej)=>{const r=new FileReader();r.onload=()=>res(r.result);r.onerror=rej;r.readAsDataURL(b)});
 const fromDataURL=u=>fetch(u).then(r=>r.blob());
-const nameFromFile=f=>f.name.replace(/\.[^.]+$/,'').replace(/[_]+/g,' ').replace(/\s+/g,' ').trim().slice(0,40);
+const nameFromFile=f=>nk(f.name.replace(/\.[^.]+$/,'').normalize('NFC').replace(/[_]+/g,' ')).slice(0,40);
 
 function blank(){return{v:1,cats:[...DEFAULT_CATS],acq:[...DEFAULT_ACQ],parts:[],looks:[],news:[],theme:'auto',accent:'#FF4F9A'}}
 function load(){
@@ -634,9 +637,9 @@ function normalize(d){
   const b=blank();
   const o={...b,...(d&&typeof d==='object'?d:{})};
   if(!/^#[0-9a-f]{6}$/i.test(o.accent||''))o.accent=b.accent;
-  o.cats=Array.isArray(o.cats)&&o.cats.length?o.cats.map(String):b.cats;
+  o.cats=Array.isArray(o.cats)&&o.cats.length?[...new Set(o.cats.map(nk).filter(Boolean))]:b.cats;
   o.acq=Array.isArray(o.acq)&&o.acq.length?o.acq.map(String):b.acq;
-  o.parts=Array.isArray(o.parts)?o.parts.filter(p=>p&&(p.name||p.nameJa)).map(p=>({id:p.id||uid(),name:String(p.name||'').slice(0,40),nameJa:String(p.nameJa||'').slice(0,40),note:String(p.note||'').slice(0,500),cat:String(p.cat||'기타'),acq:String(p.acq==='랭크업'?'랭크 달성':p.acq==='처음부터'?'기본':(p.acq||'기본')),wave:String(p.wave??''),step:String(p.step??'').replace(/\D/g,'').slice(0,4),rtype:RTYPES.includes(p.rtype)?p.rtype:'',status:p.status==='owned'?'owned':'none',fav:!!p.fav||p.status==='want',memo:String(p.memo||''),t:p.t||Date.now(),...(typeof p.imgData==='string'&&/^data:image\//.test(p.imgData)?{_img:p.imgData}:{})})):[];
+  o.parts=Array.isArray(o.parts)?o.parts.filter(p=>p&&(p.name||p.nameJa)).map(p=>({id:p.id||uid(),name:nk(p.name).slice(0,40),nameJa:nk(p.nameJa).slice(0,40),note:String(p.note||'').slice(0,500),cat:nk(p.cat)||'기타',acq:String(p.acq==='랭크업'?'랭크 달성':p.acq==='처음부터'?'기본':(p.acq||'기본')),wave:String(p.wave??''),step:String(p.step??'').replace(/\D/g,'').slice(0,4),rtype:RTYPES.includes(p.rtype)?p.rtype:'',status:p.status==='owned'?'owned':'none',fav:!!p.fav||p.status==='want',memo:String(p.memo||''),t:p.t||Date.now(),...(typeof p.imgData==='string'&&/^data:image\//.test(p.imgData)?{_img:p.imgData}:{})})):[];
   o.news=Array.isArray(o.news)?o.news.filter(n=>n&&n.title).map(n=>({id:String(n.id||uid()),kind:NKIND[n.kind]?n.kind:'update',title:String(n.title).slice(0,60),date:/^\d{4}-\d{2}-\d{2}$/.test(n.date||'')?n.date:new Date(n.t||Date.now()).toISOString().slice(0,10),body:String(n.body||'').slice(0,3000),link:/^https?:\/\//i.test(n.link||'')?String(n.link).slice(0,300):'',pin:!!n.pin,t:+n.t||Date.now(),...(n.fromSeed?{fromSeed:true}:{})})):[];
   o.looks=Array.isArray(o.looks)?o.looks.filter(l=>l&&l.name).map(l=>({id:l.id||uid(),name:String(l.name),slots:l.slots&&typeof l.slots==='object'?l.slots:{},memo:String(l.memo||'')})):[];
   // 획득 경로 축소: 쓰지 않는 예전 기본값은 목록에서 빼기
@@ -708,8 +711,8 @@ function tileHTML(p){
 }
 
 function renderList(){
-  const q=view.q.trim().toLowerCase();
-  let ps=S.parts.filter(p=>(view.status==='all'||(view.status==='fav'?p.fav:p.status===view.status))&&(view.cat==='all'||p.cat===view.cat)&&(view.acq==='all'||p.acq===view.acq)&&(view.wave==='all'||p.wave===view.wave)&&(!q||(p.name+' '+p.nameJa+' '+p.note+' '+routeLabel(p)+' '+p.rtype+' '+p.memo+' '+waveLabel(p.wave)).toLowerCase().includes(q)));
+  const q=nk(view.q).toLowerCase();
+  let ps=S.parts.filter(p=>(view.status==='all'||(view.status==='fav'?p.fav:p.status===view.status))&&(view.cat==='all'||p.cat===view.cat)&&(view.acq==='all'||p.acq===view.acq)&&(view.wave==='all'||p.wave===view.wave)&&(!q||(p.name+' '+p.nameJa+' '+p.note+' '+routeLabel(p)+' '+p.rtype+' '+p.memo+' '+waveLabel(p.wave)).normalize('NFC').toLowerCase().includes(q)));
   ps.sort(byEarliest);
   const el=$('#list');
   if(!S.parts.length){el.innerHTML=`<div class="empty"><strong>아직 등록한 파츠가 없어요</strong>게임에서 얻은 파츠를 [+ 파츠 등록]으로 하나씩 기록해 보세요.<br>친구에게 받은 백업 코드가 있다면 설정 탭에서 불러올 수 있어요.</div>`;return}
@@ -838,7 +841,7 @@ $('#pFav').onclick=()=>{setPFav(!pFav);const s=$('#pFav svg');if(pFav){s.style.t
 function setPStatus(v){pStatus=v;document.querySelectorAll('#pStatus button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.v===v))}
 $('#pStatus').addEventListener('click',e=>{const b=e.target.closest('button');if(b)setPStatus(b.dataset.v)});
 $('#fPart').addEventListener('submit',e=>{
-  e.preventDefault();const name=$('#pName').value.trim(),nameJa=$('#pNameJa').value.trim();
+  e.preventDefault();const name=nk($('#pName').value),nameJa=nk($('#pNameJa').value);
   if(!name&&!nameJa){toast('파츠 이름이나 일본어 이름 중 하나는 적어 주세요');$('#pName').focus();return}
   const data={name,nameJa,note:$('#pNote').value.trim(),cat:$('#pCat').value,acq:$('#pAcq').value,step:hasStep($('#pAcq').value)?$('#pStep').value.replace(/\D/g,'').slice(0,4):'',rtype:typedFor($('#pAcq').value,$('#pCat').value)?$('#pRType').value:'',wave:$('#pWave').value.trim().replace(/\s*탄$/,''),status:pStatus,fav:pFav,memo:$('#pMemo').value.trim()};
   let id=editId;
@@ -876,7 +879,7 @@ $('#bCat').addEventListener('change',()=>renderBulk());
 $('#bAcq').addEventListener('change',()=>renderBulk());
 $('#bRType').addEventListener('change',()=>renderBulk());
 $('#bStatus').addEventListener('click',e=>{const b=e.target.closest('button');if(b)setBStatus(b.dataset.v)});
-const matchOf=n=>{n=n.trim();return n?S.parts.find(p=>p.name.trim()===n||p.nameJa.trim()===n):null};
+const matchOf=n=>{n=nk(n);return n?S.parts.find(p=>nk(p.name)===n||nk(p.nameJa)===n):null};
 function setBTarget(v){bTarget=v;document.querySelectorAll('#bTarget button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.v===v));document.querySelectorAll('#bRows input[type=text]').forEach(i=>{i.placeholder=v==='name'?'파츠 이름':'일본어 이름';i.lang=v==='name'?'ko':'ja'})}
 $('#bTarget').addEventListener('click',e=>{const b=e.target.closest('button');if(b)setBTarget(b.dataset.v)});
 async function addBulk(files){
@@ -917,7 +920,7 @@ $('#fBulk').addEventListener('submit',async e=>{
   let add=0,link=0,fail=0;const jobs=[];
   for(const b of bulk){const m=b.link&&matchOf(b.name);
     if(m){jobs.push(setImg(m.id,b.blob).then(()=>link++,()=>fail++))}
-    else{const id=uid();const nm=b.name.trim()||'이름 없는 파츠';S.parts.push({id,t:Date.now(),...common,name:bTarget==='name'?nm:'',nameJa:bTarget==='nameJa'?nm:'',note:'',cat:b.cat||common.cat,step:hasStep(common.acq)?(b.step||''):'',rtype:typedFor(common.acq,b.cat||common.cat)?(b.rtype??$('#bRType').value):''});add++;jobs.push(setImg(id,b.blob).catch(()=>fail++))}}
+    else{const id=uid();const nm=nk(b.name)||'이름 없는 파츠';S.parts.push({id,t:Date.now(),...common,name:bTarget==='name'?nm:'',nameJa:bTarget==='nameJa'?nm:'',note:'',cat:b.cat||common.cat,step:hasStep(common.acq)?(b.step||''):'',rtype:typedFor(common.acq,b.cat||common.cat)?(b.rtype??$('#bRType').value):''});add++;jobs.push(setImg(id,b.blob).catch(()=>fail++))}}
   save();$('#bSave').disabled=true;$('#bSave').textContent='저장하는 중…';
   await Promise.all(jobs);$('#dBulk').close();render();
   toast(fail?`${fail}장은 저장하지 못했어요. 저장 공간을 확인해 주세요`:[add?`새 파츠 ${add}개 등록`:'',link?`이미지 ${link}개 연결`:''].filter(Boolean).join(', ')+'했어요');
@@ -1134,7 +1137,23 @@ async function applySeed(){
   try{localStorage.setItem(SEED_KEY,h)}catch(e){}
   applyTheme();render();if(msg)toast(msg);
 }
-(window.indexedDB?IDB.all().then(m=>{const ids=new Set(S.parts.map(p=>p.id));m.forEach((b,k)=>{if(ids.has(k))IMG.set(k,URL.createObjectURL(b));else IDB.del(k).catch(()=>{})});if(m.size)render()}).catch(()=>{}):Promise.resolve()).then(applySeed);
+(window.indexedDB?IDB.all().then(m=>{const ids=new Set(S.parts.map(p=>p.id));m.forEach((b,k)=>{if(ids.has(k))IMG.set(k,URL.createObjectURL(b));else IDB.del(k).catch(()=>{})});if(m.size)render()}).catch(()=>{}):Promise.resolve()).then(fixDupes).then(applySeed);
+async function fixDupes(){
+  const FLAG='aikatsu-encore-nfc-fix1';let done=false;try{done=!!localStorage.getItem(FLAG)}catch(e){}
+  if(done)return;
+  const groups=new Map();S.parts.forEach(p=>{const k=p.cat+'|'+dn(p);if(!groups.has(k))groups.set(k,[]);groups.get(k).push(p)});
+  let merged=0;
+  for(const g of groups.values()){if(g.length<2)continue;
+    g.sort((a,b)=>(a.t||0)-(b.t||0));const base=g[0];
+    for(const o of g.slice(1)){
+      if(!IMG.has(base.id)&&IMG.has(o.id)){try{const blob=await IDB.get(o.id);if(blob)await setImg(base.id,blob)}catch(e){}}
+      if(o.status==='owned')base.status='owned';if(o.fav)base.fav=true;
+      ['nameJa','name','wave','step','rtype','memo','note'].forEach(k=>{if(!base[k]&&o[k])base[k]=o[k]});
+      S.looks.forEach(l=>Object.keys(l.slots).forEach(c=>{if(l.slots[c]===o.id)l.slots[c]=base.id}));
+      await delImg(o.id);S.parts=S.parts.filter(x=>x!==o);merged++}}
+  try{localStorage.setItem(FLAG,'1')}catch(e){}
+  if(merged){save();render();toast(`이름이 같은 파츠 ${merged}개를 하나로 합쳤어요`)}
+}
 if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(()=>{}))}
 })();
 </script>

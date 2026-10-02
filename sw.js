@@ -1,6 +1,6 @@
 // 파일을 수정해 다시 배포할 때마다 버전 숫자를 올려 주세요.
 // (parts-data.json만 바꿀 때는 올리지 않아도 돼요. 항상 최신 파일을 먼저 확인해요.)
-const CACHE = 'parts-note-v13';
+const CACHE = 'parts-note-v14';
 const ASSETS = ['./', './index.html', './manifest.webmanifest', './icons/icon.svg', './icons/icon-192.png', './icons/icon-512.png'];
 
 self.addEventListener('install', e => {
