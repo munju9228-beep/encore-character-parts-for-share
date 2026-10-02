@@ -92,8 +92,8 @@ nav.tabs button[aria-selected="true"]{background:var(--ink);color:var(--bg)}
 .step span{font-size:14px;white-space:nowrap}
 .brow .bstep{display:flex;align-items:center;gap:6px;font-size:13px}
 .route .rtype{display:none}
-.route.rank .rtype{display:block}
-.route.rank .step{grid-column:1/-1}
+.route.typed .rtype{display:block}
+.route.typed .step{grid-column:1/-1}
 .ty{display:inline-block;font-family:"Jua",sans-serif;font-size:11px;line-height:1.3;border-radius:6px;padding:0 5px;margin-right:3px;color:#fff}
 .ty-큐트{background:#FF5C9E}.ty-쿨{background:#2F8FE8}.ty-섹시{background:#8B4FD8}.ty-팝{background:#F29A00}
 .brow .bstep select{width:auto;padding:5px 6px}
@@ -494,7 +494,7 @@ textarea.io{width:100%;min-height:110px;padding:10px;border-radius:12px;border:2
       </div>
       <div class="field"><label for="bAcq">획득 경로</label>
         <div class="route" id="bRoute"><select id="bAcq" aria-label="획득 경로 종류"></select><select id="bRType" class="rtype" aria-label="랭크 타입 (기본값)"></select><input id="bMemo" maxlength="100" placeholder="상세 (선택)" aria-label="획득 경로 상세"></div>
-        <p class="bcount" id="bStepHint" style="margin:6px 0 0">몇 번째인지는 아래 사진 목록에서 한 장씩 적을 수 있어요.<span id="bRTypeHint"> 랭크 타입도 사진마다 바꿀 수 있어요.</span></p>
+        <p class="bcount" id="bStepHint" style="margin:6px 0 0">몇 번째인지는 아래 사진 목록에서 한 장씩 적을 수 있어요.<span id="bRTypeHint"> 타입(큐트·쿨·섹시·팝)도 사진마다 바꿀 수 있어요.</span></p>
       </div>
       <div class="field"><span class="lb">상태</span>
         <div style="display:flex;gap:8px"><div class="seg" id="bStatus" style="flex:1"><button type="button" data-v="owned">보유</button><button type="button" data-v="none">미보유</button></div><button type="button" class="heartbtn" id="bFav" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20.5s-7.5-4.6-7.5-10.2A4.3 4.3 0 0 1 12 7.6a4.3 4.3 0 0 1 7.5 2.7c0 5.6-7.5 10.2-7.5 10.2z"/></svg><span>원해요</span></button></div>
@@ -572,11 +572,12 @@ textarea.io{width:100%;min-height:110px;padding:10px;border-radius:12px;border:2
 (function(){
 const KEY='aikatsu-encore-parts-v1';
 const DEFAULT_CATS=['페이스','보이스','헤어 파츠','헤어 컬러','아이 컬러','메이크업','원 포인트','헤어 데코','기타'];
-const DEFAULT_ACQ=['이벤트','스탬프','랭크 달성'];
+const DEFAULT_ACQ=['기본','이벤트','스탬프','랭크 달성'];
 const OLD_ACQ=['처음부터','파츠 뽑기','랭크업','월간 배포','미션 클리어','기타'];
 const dn=p=>p.name||p.nameJa||'이름 없는 파츠';
 const STEP_LB={'스탬프':'스탬프','랭크 달성':'랭크'};
-const RANK='랭크 달성', RTYPES=['큐트','쿨','섹시','팝'];
+const RANK='랭크 달성', RTYPES=['큐트','쿨','섹시','팝'], FACE='페이스';
+const typedFor=(acq,cat)=>acq===RANK||cat===FACE;
 const rtOpts=cur=>`<option value="">타입 선택</option>`+RTYPES.map(x=>`<option ${x===cur?'selected':''}>${x}</option>`).join('');
 const hasStep=a=>a in STEP_LB;
 const ACCENTS=[['핑크','#FF4F9A'],['체리','#D6246E'],['코랄','#FF6F61'],['선샤인','#F2A900'],['민트','#1FB89A'],['스카이','#2F9BEA'],['라벤더','#8E6BF0']];
@@ -635,11 +636,11 @@ function normalize(d){
   if(!/^#[0-9a-f]{6}$/i.test(o.accent||''))o.accent=b.accent;
   o.cats=Array.isArray(o.cats)&&o.cats.length?o.cats.map(String):b.cats;
   o.acq=Array.isArray(o.acq)&&o.acq.length?o.acq.map(String):b.acq;
-  o.parts=Array.isArray(o.parts)?o.parts.filter(p=>p&&(p.name||p.nameJa)).map(p=>({id:p.id||uid(),name:String(p.name||'').slice(0,40),nameJa:String(p.nameJa||'').slice(0,40),note:String(p.note||'').slice(0,500),cat:String(p.cat||'기타'),acq:String(p.acq==='랭크업'?'랭크 달성':(p.acq||'이벤트')),wave:String(p.wave??''),step:String(p.step??'').replace(/\D/g,'').slice(0,4),rtype:RTYPES.includes(p.rtype)?p.rtype:'',status:p.status==='owned'?'owned':'none',fav:!!p.fav||p.status==='want',memo:String(p.memo||''),t:p.t||Date.now(),...(typeof p.imgData==='string'&&/^data:image\//.test(p.imgData)?{_img:p.imgData}:{})})):[];
+  o.parts=Array.isArray(o.parts)?o.parts.filter(p=>p&&(p.name||p.nameJa)).map(p=>({id:p.id||uid(),name:String(p.name||'').slice(0,40),nameJa:String(p.nameJa||'').slice(0,40),note:String(p.note||'').slice(0,500),cat:String(p.cat||'기타'),acq:String(p.acq==='랭크업'?'랭크 달성':p.acq==='처음부터'?'기본':(p.acq||'기본')),wave:String(p.wave??''),step:String(p.step??'').replace(/\D/g,'').slice(0,4),rtype:RTYPES.includes(p.rtype)?p.rtype:'',status:p.status==='owned'?'owned':'none',fav:!!p.fav||p.status==='want',memo:String(p.memo||''),t:p.t||Date.now(),...(typeof p.imgData==='string'&&/^data:image\//.test(p.imgData)?{_img:p.imgData}:{})})):[];
   o.news=Array.isArray(o.news)?o.news.filter(n=>n&&n.title).map(n=>({id:String(n.id||uid()),kind:NKIND[n.kind]?n.kind:'update',title:String(n.title).slice(0,60),date:/^\d{4}-\d{2}-\d{2}$/.test(n.date||'')?n.date:new Date(n.t||Date.now()).toISOString().slice(0,10),body:String(n.body||'').slice(0,3000),link:/^https?:\/\//i.test(n.link||'')?String(n.link).slice(0,300):'',pin:!!n.pin,t:+n.t||Date.now(),...(n.fromSeed?{fromSeed:true}:{})})):[];
   o.looks=Array.isArray(o.looks)?o.looks.filter(l=>l&&l.name).map(l=>({id:l.id||uid(),name:String(l.name),slots:l.slots&&typeof l.slots==='object'?l.slots:{},memo:String(l.memo||'')})):[];
   // 획득 경로 축소: 쓰지 않는 예전 기본값은 목록에서 빼기
-  o.acq=o.acq.map(a=>a==='랭크업'?'랭크 달성':a).filter(a=>!OLD_ACQ.includes(a)||o.parts.some(p=>p.acq===a));
+  o.acq=o.acq.map(a=>a==='랭크업'?'랭크 달성':a==='처음부터'?'기본':a).filter(a=>!OLD_ACQ.includes(a)||o.parts.some(p=>p.acq===a));
   o.acq=[...new Set([...DEFAULT_ACQ,...o.acq])];
   // 앞머리/뒷머리 → 헤어 파츠로 통합
   const HAIR=['앞머리','뒷머리'];
@@ -689,7 +690,7 @@ const waveLabel=w=>w?(/^\d+$/.test(w)?w+'탄':w):'';
 const waveNum=w=>/^\d+$/.test(w)?+w:(w?9998:9999);
 const waves=()=>[...new Set(S.parts.map(p=>p.wave))].sort((a,b)=>waveNum(a)-waveNum(b)||a.localeCompare(b));
 const routeLabel=p=>{if(!hasStep(p.acq))return p.acq;const rt=p.acq===RANK&&p.rtype?p.rtype+' ':'';return p.step?`${rt}${p.step}번째 ${STEP_LB[p.acq]}`:(rt?rt+'랭크':p.acq)};
-const routeHTML=p=>{const tag=p.acq===RANK&&p.rtype?`<span class="ty ty-${p.rtype}">${p.rtype}</span>`:'';const txt=p.acq===RANK&&p.rtype?routeLabel(p).slice(p.rtype.length+1):routeLabel(p);return tag+esc(txt)+(p.memo?' / '+esc(p.memo):'')};
+const routeHTML=p=>{const tag=p.rtype?`<span class="ty ty-${p.rtype}">${p.rtype}</span>`:'';const txt=p.acq===RANK&&p.rtype?routeLabel(p).slice(p.rtype.length+1):routeLabel(p);return tag+esc(txt)+(p.memo?' / '+esc(p.memo):'')};
 const rtIdx=p=>{const i=RTYPES.indexOf(p.rtype);return i<0?9:i};
 const acqIdx=a=>{const i=S.acq.indexOf(a);return i<0?999:i};
 const stepNum=p=>p.step?+p.step:1e6;
@@ -708,13 +709,13 @@ function tileHTML(p){
 
 function renderList(){
   const q=view.q.trim().toLowerCase();
-  let ps=S.parts.filter(p=>(view.status==='all'||(view.status==='fav'?p.fav:p.status===view.status))&&(view.cat==='all'||p.cat===view.cat)&&(view.acq==='all'||p.acq===view.acq)&&(view.wave==='all'||p.wave===view.wave)&&(!q||(p.name+' '+p.nameJa+' '+p.note+' '+routeLabel(p)+' '+p.memo+' '+waveLabel(p.wave)).toLowerCase().includes(q)));
+  let ps=S.parts.filter(p=>(view.status==='all'||(view.status==='fav'?p.fav:p.status===view.status))&&(view.cat==='all'||p.cat===view.cat)&&(view.acq==='all'||p.acq===view.acq)&&(view.wave==='all'||p.wave===view.wave)&&(!q||(p.name+' '+p.nameJa+' '+p.note+' '+routeLabel(p)+' '+p.rtype+' '+p.memo+' '+waveLabel(p.wave)).toLowerCase().includes(q)));
   ps.sort(byEarliest);
   const el=$('#list');
   if(!S.parts.length){el.innerHTML=`<div class="empty"><strong>아직 등록한 파츠가 없어요</strong>게임에서 얻은 파츠를 [+ 파츠 등록]으로 하나씩 기록해 보세요.<br>친구에게 받은 백업 코드가 있다면 설정 탭에서 불러올 수 있어요.</div>`;return}
   if(!ps.length){el.innerHTML=`<div class="empty"><strong>조건에 맞는 파츠가 없어요</strong>검색어나 필터를 바꿔 보세요.</div>`;return}
   const cats=view.cat==='all'?S.cats:[view.cat];
-  el.innerHTML=cats.map(c=>{const g=ps.filter(p=>p.cat===c);if(!g.length)return'';
+  el.innerHTML=cats.map(c=>{const g=(c===FACE?ps.slice().sort((a,b)=>rtIdx(a)-rtIdx(b)||byEarliest(a,b)):ps).filter(p=>p.cat===c);if(!g.length)return'';
     const all=S.parts.filter(p=>p.cat===c);
     return `<h2 class="section-h">${esc(c)}<span>${all.filter(p=>p.status==='owned').length} / ${all.length} 보유</span></h2><div class="grid">${g.map(tileHTML).join('')}</div>`}).join('');
 }
@@ -839,7 +840,7 @@ $('#pStatus').addEventListener('click',e=>{const b=e.target.closest('button');if
 $('#fPart').addEventListener('submit',e=>{
   e.preventDefault();const name=$('#pName').value.trim(),nameJa=$('#pNameJa').value.trim();
   if(!name&&!nameJa){toast('파츠 이름이나 일본어 이름 중 하나는 적어 주세요');$('#pName').focus();return}
-  const data={name,nameJa,note:$('#pNote').value.trim(),cat:$('#pCat').value,acq:$('#pAcq').value,step:hasStep($('#pAcq').value)?$('#pStep').value.replace(/\D/g,'').slice(0,4):'',rtype:$('#pAcq').value===RANK?$('#pRType').value:'',wave:$('#pWave').value.trim().replace(/\s*탄$/,''),status:pStatus,fav:pFav,memo:$('#pMemo').value.trim()};
+  const data={name,nameJa,note:$('#pNote').value.trim(),cat:$('#pCat').value,acq:$('#pAcq').value,step:hasStep($('#pAcq').value)?$('#pStep').value.replace(/\D/g,'').slice(0,4):'',rtype:typedFor($('#pAcq').value,$('#pCat').value)?$('#pRType').value:'',wave:$('#pWave').value.trim().replace(/\s*탄$/,''),status:pStatus,fav:pFav,memo:$('#pMemo').value.trim()};
   let id=editId;
   if(editId){Object.assign(S.parts.find(x=>x.id===editId),data);toast('저장했어요')}
   else{const dup=S.parts.some(p=>dn(p)===dn(data)&&p.cat===data.cat);id=uid();S.parts.push({id,t:Date.now(),...data});toast(dup?'같은 이름의 파츠가 이미 있어요. 등록은 했어요':'등록했어요')}
@@ -848,8 +849,9 @@ $('#fPart').addEventListener('submit',e=>{
   done.catch(()=>toast('이미지를 저장하지 못했어요. 브라우저 저장 공간을 확인해 주세요')).finally(render);
 });
 $('#pCancel').onclick=()=>$('#dPart').close();
-function syncStep(){const a=$('#pAcq').value,on=hasStep(a);$('#pRoute').classList.toggle('rank',a===RANK);$('#pStepBox').classList.toggle('hidden',!on);$('#pMemo').classList.toggle('detail',on);$('#pMemo').style.gridColumn=on?'':'auto';if(on)$('#pStepLb').textContent='번째 '+STEP_LB[a]}
+function syncStep(){const a=$('#pAcq').value,on=hasStep(a),ty=typedFor(a,$('#pCat').value);$('#pRoute').classList.toggle('typed',ty);$('#pRType').setAttribute('aria-label',a===RANK?'랭크 타입':'페이스 타입');$('#pStepBox').classList.toggle('hidden',!on);$('#pMemo').classList.toggle('detail',on||ty);$('#pMemo').style.gridColumn=(on||ty)?'':'auto';if(on)$('#pStepLb').textContent='번째 '+STEP_LB[a]}
 $('#pAcq').addEventListener('change',syncStep);
+$('#pCat').addEventListener('change',syncStep);
 function showPv(url){const v=$('#pImgPv');v.classList.toggle('has',!!url);v.innerHTML=url?`<img src="${url}" alt="파츠 사진">`:`${CAM}<span>눌러서 파츠 사진 넣기</span>`;$('#pImgDel').classList.toggle('hidden',!url);$('#pImgPick').textContent=url?'사진 바꾸기':'사진 고르기'}
 $('#pImg').addEventListener('change',async e=>{const f=e.target.files[0];e.target.value='';if(!f)return;
   try{pImg=await shrink(f);showPv(URL.createObjectURL(pImg));if(!$('#pName').value.trim()&&!$('#pNameJa').value.trim())$('#pName').value=nameFromFile(f)}catch(err){toast('이 이미지는 열 수 없어요. PNG나 JPG로 다시 골라 주세요')}});
@@ -887,18 +889,19 @@ async function addBulk(files){
 }
 function renderBulk(){
   $('#bRows').innerHTML=bulk.map(b=>{const m=b.link!==null&&matchOf(b.name);
-    return `<div class="brow" data-k="${b.key}"><img src="${b.url}" alt=""><div class="nm-col"><input type="text" value="${esc(b.name)}" maxlength="40" aria-label="이름" placeholder="${bTarget==='name'?'파츠 이름':'일본어 이름'}" lang="${bTarget==='name'?'ko':'ja'}">${m&&b.link?'':(hasStep($('#bAcq').value)?`<label class="bstep">${$('#bAcq').value===RANK?`<select data-rtype aria-label="랭크 타입">${rtOpts(b.rtype??$('#bRType').value)}</select>`:''}<input inputmode="numeric" maxlength="4" value="${esc(b.step||'')}" data-step aria-label="몇 번째">번째 ${STEP_LB[$('#bAcq').value]}</label>`:'')+`<select aria-label="카테고리">${S.cats.map(c=>`<option ${c===(b.cat||$('#bCat').value)?'selected':''}>${esc(c)}</option>`).join('')}</select>`}</div><button type="button" class="x" aria-label="빼기">×</button>
+    return `<div class="brow" data-k="${b.key}"><img src="${b.url}" alt=""><div class="nm-col"><input type="text" value="${esc(b.name)}" maxlength="40" aria-label="이름" placeholder="${bTarget==='name'?'파츠 이름':'일본어 이름'}" lang="${bTarget==='name'?'ko':'ja'}">${m&&b.link?'':((()=>{const acq=$('#bAcq').value,ty=typedFor(acq,b.cat||$('#bCat').value),st=hasStep(acq);if(!ty&&!st)return'';
+  return `<label class="bstep">${ty?`<select data-rtype aria-label="타입">${rtOpts(b.rtype??$('#bRType').value)}</select>`:''}${st?`<input inputmode="numeric" maxlength="4" value="${esc(b.step||'')}" data-step aria-label="몇 번째">번째 ${STEP_LB[acq]}`:''}</label>`})())+`<select aria-label="카테고리">${S.cats.map(c=>`<option ${c===(b.cat||$('#bCat').value)?'selected':''}>${esc(c)}</option>`).join('')}</select>`}</div><button type="button" class="x" aria-label="빼기">×</button>
     ${m?`<label class="lk"><input type="checkbox" ${b.link?'checked':''}> 이미 있는 '${esc(dn(m))}'(${esc(m.cat)})에 이미지 ${IMG.has(m.id)?'바꿔 넣기':'넣기'}</label>`:''}</div>`}).join('');
   const linked=bulk.filter(b=>b.link&&matchOf(b.name)).length,fresh=bulk.length-linked;
   $('#bCount').textContent=bulk.length?`${bulk.length}장 선택됨. 이름이 다르면 여기서 고쳐 주세요.`:'';
-  $('#bCommon').classList.toggle('hidden',!fresh);$('#bStepHint').classList.toggle('hidden',!hasStep($('#bAcq').value));$('#bRoute').classList.toggle('rank',$('#bAcq').value===RANK);$('#bRTypeHint').classList.toggle('hidden',$('#bAcq').value!==RANK);
+  $('#bCommon').classList.toggle('hidden',!fresh);$('#bStepHint').classList.toggle('hidden',!hasStep($('#bAcq').value));const bty=typedFor($('#bAcq').value,$('#bCat').value)||bulk.some(b=>(b.cat||'')===FACE);$('#bRoute').classList.toggle('typed',bty);$('#bRTypeHint').classList.toggle('hidden',!bty);
   const s=$('#bSave');s.disabled=!bulk.length;
   s.textContent=!bulk.length?'등록':[fresh?`새 파츠 ${fresh}개 등록`:'',linked?`이미지 ${linked}개 연결`:''].filter(Boolean).join(', ');
 }
 $('#bRows').addEventListener('input',e=>{if(e.target.hasAttribute('data-step')){bulk.find(x=>x.key===e.target.closest('.brow').dataset.k).step=e.target.value.replace(/\D/g,'').slice(0,4);return}
   if(e.target.type!=='text')return;const b=bulk.find(x=>x.key===e.target.closest('.brow').dataset.k);b.name=e.target.value;const had=!!e.target.closest('.brow').querySelector('.lk');const m=matchOf(b.name);if(!!m!==had){b.link=!!m;const pos=e.target.selectionStart;renderBulk();const inp=document.querySelector(`.brow[data-k="${b.key}"] input[type=text]`);inp.focus();inp.setSelectionRange(pos,pos)}});
 $('#bRows').addEventListener('change',e=>{if(e.target.hasAttribute('data-rtype')){bulk.find(x=>x.key===e.target.closest('.brow').dataset.k).rtype=e.target.value;return}
-  if(e.target.tagName==='SELECT'){bulk.find(x=>x.key===e.target.closest('.brow').dataset.k).cat=e.target.value;return}
+  if(e.target.tagName==='SELECT'){bulk.find(x=>x.key===e.target.closest('.brow').dataset.k).cat=e.target.value;renderBulk();return}
   if(e.target.type!=='checkbox')return;const b=bulk.find(x=>x.key===e.target.closest('.brow').dataset.k);b.link=e.target.checked;renderBulk()});
 $('#bRows').addEventListener('click',e=>{const x=e.target.closest('.x');if(!x)return;const k=x.closest('.brow').dataset.k;const b=bulk.find(v=>v.key===k);URL.revokeObjectURL(b.url);bulk=bulk.filter(v=>v.key!==k);renderBulk()});
 $('#bFiles').addEventListener('change',e=>{const f=e.target.files;if(f&&f.length)addBulk(f);e.target.value=''});
@@ -914,7 +917,7 @@ $('#fBulk').addEventListener('submit',async e=>{
   let add=0,link=0,fail=0;const jobs=[];
   for(const b of bulk){const m=b.link&&matchOf(b.name);
     if(m){jobs.push(setImg(m.id,b.blob).then(()=>link++,()=>fail++))}
-    else{const id=uid();const nm=b.name.trim()||'이름 없는 파츠';S.parts.push({id,t:Date.now(),...common,name:bTarget==='name'?nm:'',nameJa:bTarget==='nameJa'?nm:'',note:'',cat:b.cat||common.cat,step:hasStep(common.acq)?(b.step||''):'',rtype:common.acq===RANK?(b.rtype??$('#bRType').value):''});add++;jobs.push(setImg(id,b.blob).catch(()=>fail++))}}
+    else{const id=uid();const nm=b.name.trim()||'이름 없는 파츠';S.parts.push({id,t:Date.now(),...common,name:bTarget==='name'?nm:'',nameJa:bTarget==='nameJa'?nm:'',note:'',cat:b.cat||common.cat,step:hasStep(common.acq)?(b.step||''):'',rtype:typedFor(common.acq,b.cat||common.cat)?(b.rtype??$('#bRType').value):''});add++;jobs.push(setImg(id,b.blob).catch(()=>fail++))}}
   save();$('#bSave').disabled=true;$('#bSave').textContent='저장하는 중…';
   await Promise.all(jobs);$('#dBulk').close();render();
   toast(fail?`${fail}장은 저장하지 못했어요. 저장 공간을 확인해 주세요`:[add?`새 파츠 ${add}개 등록`:'',link?`이미지 ${link}개 연결`:''].filter(Boolean).join(', ')+'했어요');
