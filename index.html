@@ -236,7 +236,7 @@ nav.tabs .dot{position:absolute;top:6px;right:5px;width:7px;height:7px;border-ra
 .menu-opts{display:flex;flex-wrap:wrap;gap:8px 16px;align-items:center;margin:0 0 12px;font-size:14px}
 .menu-opts .seg{flex:1;min-width:200px}
 .menu-opts .seg button{padding:7px 4px}
-.fabrow{position:fixed;right:max(16px,calc(50% - 424px));bottom:calc(84px + env(safe-area-inset-bottom,0px));z-index:6;display:flex;gap:8px}
+.fabrow{position:fixed;right:max(16px,calc(50% - 424px));bottom:calc(18px + env(safe-area-inset-bottom,0px));z-index:6;display:flex;gap:8px}
 .fab2 svg{width:16px;height:16px;flex:none}
 .fab2{display:inline-flex;align-items:center;gap:5px;box-shadow:0 2px 6px rgba(40,20,60,.12);border:2px solid var(--pink);background:var(--paper);color:var(--pink);font-family:"Jua",sans-serif;font-size:15px;padding:9px 16px;border-radius:99px}
 .fab2[aria-pressed="true"]{background:var(--pink);color:var(--on-accent)}
@@ -253,6 +253,7 @@ body.quick .tile:active,body.quick .steps li:active{transform:scale(.97)}
 .dropping::after{content:"여기에 놓으면 한 번에 등록할 수 있어요";position:fixed;inset:12px;border:3px dashed var(--pink);border-radius:24px;background:rgba(255,79,154,.12);display:grid;place-items:center;font-family:"Jua",sans-serif;font-size:22px;color:var(--pink);z-index:30;pointer-events:none}
 
 /* fab */
+.fabrow:not(.hidden)~.fab{bottom:calc(70px + env(safe-area-inset-bottom,0px))}
 .fab{position:fixed;right:max(16px,calc(50% - 424px));bottom:calc(18px + env(safe-area-inset-bottom,0px));z-index:6;border:0;background:var(--pink);color:var(--on-accent);font-family:"Jua",sans-serif;font-size:18px;padding:14px 22px;border-radius:99px;box-shadow:0 4px 0 var(--accent-deep)}
 .fab:active{transform:translateY(2px);box-shadow:0 2px 0 var(--accent-deep)}
 
