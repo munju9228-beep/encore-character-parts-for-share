@@ -236,7 +236,20 @@ nav.tabs .dot{position:absolute;top:6px;right:5px;width:7px;height:7px;border-ra
 .menu-opts{display:flex;flex-wrap:wrap;gap:8px 16px;align-items:center;margin:0 0 12px;font-size:14px}
 .menu-opts .seg{flex:1;min-width:200px}
 .menu-opts .seg button{padding:7px 4px}
-.fab2{position:fixed;right:max(16px,calc(50% - 424px));bottom:calc(84px + env(safe-area-inset-bottom,0px));z-index:6;border:2px solid var(--pink);background:var(--paper);color:var(--pink);font-family:"Jua",sans-serif;font-size:15px;padding:9px 16px;border-radius:99px}
+.fabrow{position:fixed;right:max(16px,calc(50% - 424px));bottom:calc(84px + env(safe-area-inset-bottom,0px));z-index:6;display:flex;gap:8px}
+.fab2 svg{width:16px;height:16px;flex:none}
+.fab2{display:inline-flex;align-items:center;gap:5px;box-shadow:0 2px 6px rgba(40,20,60,.12);border:2px solid var(--pink);background:var(--paper);color:var(--pink);font-family:"Jua",sans-serif;font-size:15px;padding:9px 16px;border-radius:99px}
+.fab2[aria-pressed="true"]{background:var(--pink);color:var(--on-accent)}
+.quickbar{position:fixed;left:50%;top:calc(10px + env(safe-area-inset-top,0px));transform:translateX(-50%);z-index:8;display:flex;align-items:center;gap:10px;background:var(--ink);color:var(--bg);border-radius:99px;padding:8px 8px 8px 16px;font-size:14px;box-shadow:0 4px 14px rgba(40,20,60,.25);white-space:nowrap;max-width:calc(100% - 24px)}
+.quickbar b{font-family:"Jua",sans-serif;font-weight:400;font-size:15px;color:var(--pink)}
+.quickbar span{overflow:hidden;text-overflow:ellipsis}
+.quickbar button{border:0;border-radius:99px;background:var(--pink);color:var(--on-accent);font-family:"Jua",sans-serif;font-size:14px;padding:6px 14px;flex:none}
+body.quick .tile,body.quick .steps li{cursor:pointer}
+body.quick .tile:not(.owned){box-shadow:0 0 0 2px var(--pink-soft)}
+body.quick .tile:active,body.quick .steps li:active{transform:scale(.97)}
+.tile.flash{animation:flash .45s ease-out}
+@keyframes flash{0%{box-shadow:0 0 0 6px color-mix(in srgb,var(--gold) 55%,transparent)}100%{box-shadow:0 0 0 0 transparent}}
+@media (prefers-reduced-motion:reduce){.tile.flash{animation:none}body.quick .tile:active,body.quick .steps li:active{transform:none}}
 .dropping::after{content:"여기에 놓으면 한 번에 등록할 수 있어요";position:fixed;inset:12px;border:3px dashed var(--pink);border-radius:24px;background:rgba(255,79,154,.12);display:grid;place-items:center;font-family:"Jua",sans-serif;font-size:22px;color:var(--pink);z-index:30;pointer-events:none}
 
 /* fab */
@@ -309,7 +322,7 @@ dialog::backdrop{background:rgba(30,15,45,.45)}
 textarea.io{width:100%;min-height:110px;padding:10px;border-radius:12px;border:2px solid var(--line);background:var(--bg);font-size:12px;resize:vertical}
 .btns{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
 
-.toast{position:fixed;left:50%;bottom:calc(140px + env(safe-area-inset-bottom,0px));transform:translate(-50%,20px);background:var(--ink);color:var(--bg);padding:10px 18px;border-radius:99px;font-size:14px;opacity:0;pointer-events:none;transition:.25s;z-index:20;white-space:nowrap}
+.toast{position:fixed;left:50%;bottom:calc(140px + env(safe-area-inset-bottom,0px));transform:translate(-50%,20px);background:var(--ink);color:var(--bg);padding:10px 18px;border-radius:99px;font-size:14px;opacity:0;pointer-events:none;transition:.25s;z-index:20;max-width:calc(100% - 32px);text-align:center;word-break:keep-all}
 .toast.on{opacity:1;transform:translate(-50%,0)}
 .hidden{display:none!important}
 .note{font-size:12px;color:var(--ink-soft);text-align:center;margin-top:36px}
@@ -435,7 +448,8 @@ textarea.io{width:100%;min-height:110px;padding:10px;border-radius:12px;border:2
   </section>
 </div>
 
-<button class="fab2" id="fab2" aria-haspopup="dialog">더보기</button>
+<div class="fabrow" id="fabRow"><button class="fab2" id="quickBtn" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>빠른 체크</button><button class="fab2" id="fab2" aria-haspopup="dialog">더보기</button></div>
+<div class="quickbar hidden" id="quickBar" role="status"><b>빠른 체크</b><span id="quickTxt">파츠를 누르면 보유로 바뀌어요</span><button id="quickEnd">끝내기</button></div>
 <button class="fab" id="fab">+ 파츠 등록</button>
 
 <!-- part sheet -->
@@ -787,7 +801,7 @@ function render(){
   renderMeter();
   ['parts','track','looks','info','settings'].forEach(t=>$('#v-'+t).classList.toggle('hidden',view.tab!==t));
   document.querySelectorAll('nav.tabs button').forEach(b=>b.setAttribute('aria-selected',b.dataset.tab===view.tab));
-  const fab=$('#fab');fab.classList.toggle('hidden',view.tab==='settings');$('#fab2').classList.toggle('hidden',!['parts','track'].includes(view.tab));fab.textContent=view.tab==='looks'?'+ 조합 만들기':view.tab==='info'?'+ 소식 쓰기':'+ 파츠 등록';
+  const fab=$('#fab');fab.classList.toggle('hidden',view.tab==='settings');$('#fabRow').classList.toggle('hidden',!['parts','track'].includes(view.tab));if(quick&&!['parts','track'].includes(view.tab))setQuick(false);fab.textContent=view.tab==='looks'?'+ 조합 만들기':view.tab==='info'?'+ 소식 쓰기':'+ 파츠 등록';
   if(view.tab==='parts'){renderFilters();renderList()}
   if(view.tab==='track')renderTrack();
   if(view.tab==='looks')renderLooks();
@@ -831,11 +845,26 @@ function renderTrack(){
 $('#tWave').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;view.twave=b.dataset.v;view.tsec='all';renderTrack()});
 $('#tSec').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;view.tsec=b.dataset.v;renderTrack()});
 $('#track').addEventListener('click',e=>{
+  if(quick){const li=e.target.closest('.steps li');const o=li&&li.querySelector('[data-open]');if(o)quickToggle(o.dataset.open);return}
   const st=e.target.closest('[data-stamp]');
   if(st){const p=S.parts.find(x=>x.id===st.dataset.stamp);p.status=p.status==='owned'?'none':'owned';save();renderMeter();renderTrack();
     const ns=$('#track').querySelector('[data-stamp="'+p.id+'"]');if(ns){ns.classList.add('pop');ns.focus({preventScroll:true})}return}
   const o=e.target.closest('[data-open]');if(o)openView(o.dataset.open);
 });
+
+/* 빠른 체크: 켜 두면 파츠를 누를 때마다 보유 ↔ 미보유 */
+let quick=false,quickCount=0;
+function setQuick(on){quick=on;quickCount=0;document.body.classList.toggle('quick',on);$('#quickBtn').setAttribute('aria-pressed',on);$('#quickBar').classList.toggle('hidden',!on);$('#quickTxt').textContent='파츠를 누르면 보유로 바뀌어요'}
+function quickToggle(id){const p=S.parts.find(x=>x.id===id);if(!p)return;
+  p.status=p.status==='owned'?'none':'owned';save();
+  if(p.status==='owned')quickCount++;else quickCount=Math.max(0,quickCount-1);
+  $('#quickTxt').textContent=p.status==='owned'?`'${dn(p)}' 보유! (이번에 ${quickCount}개)`:`'${dn(p)}' 미보유로 되돌렸어요`;
+  try{navigator.vibrate&&navigator.vibrate(12)}catch(e){}
+  renderMeter();if(view.tab==='parts'){renderFilters();renderList()}else renderTrack();
+  const st=document.querySelector('[data-stamp="'+id+'"]');if(st){st.classList.add('pop');const tl=st.closest('.tile');if(tl&&p.status==='owned')tl.classList.add('flash')}}
+$('#quickBtn').onclick=()=>{setQuick(!quick);if(quick)toast('파츠를 누르면 바로 보유로 바뀌어요')};
+$('#quickEnd').onclick=()=>{const n=quickCount;setQuick(false);if(n)toast(`보유 ${n}개를 체크했어요`)};
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&quick&&!document.querySelector('dialog[open]'))setQuick(false)});
 
 /* part view (파츠 누르면 뜨는 정보 화면) */
 let viewId=null,returnTo=null;
@@ -1295,6 +1324,7 @@ $('#fWave').addEventListener('change',e=>{view.wave=e.target.value;render()});
 $('#fStatus').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;view.status=b.dataset.v;render()});
 $('#fCat').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;view.cat=b.dataset.v;render()});
 $('#list').addEventListener('click',e=>{
+  if(quick){const t=e.target.closest('.tile');if(t)quickToggle(t.dataset.id);return}
   const st=e.target.closest('[data-stamp]');
   if(st){const p=S.parts.find(x=>x.id===st.dataset.stamp);p.status=p.status==='owned'?'none':'owned';save();
     renderMeter();renderFilters();renderList();
