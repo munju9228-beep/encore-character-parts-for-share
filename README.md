@@ -30,6 +30,65 @@
 3. 저장소 `Settings` → `Pages` → Source를 `Deploy from a branch`, Branch를 `main` / `/ (root)`로 두고 저장합니다.
 4. 1~2분 뒤 `https://<아이디>.github.io/aikatsu-parts/` 주소가 생깁니다.
 
+## 백업 코드(기기 연결) 켜기 — 처음 한 번만
+GitHub Pages는 파일만 보여 주는 곳이라, 목록과 사진을 맡아 둘 저장소가 따로 필요해요.
+가장 쉬운 방법은 **내 구글 드라이브**를 저장소로 쓰는 Google Apps Script예요. (Firebase도 계속 쓸 수 있어요.)
+
+### 방법 ⓪ Cloud Firestore (Firebase) — console.cloud.google.com/firestore
+1. https://console.cloud.google.com/firestore 접속 → 맨 위 프로젝트 선택 상자에서 Firebase 프로젝트를 골라요.
+2. [데이터베이스 만들기] → 버전 Standard → 데이터베이스 ID는 `(default)` 그대로 → 모드는 **기본(Native) 모드** → 위치는 asia-northeast3(서울) → 만들기.
+   (무료 사용량은 `(default)` 데이터베이스에만 적용돼요.)
+3. 보안 규칙: 이 저장소의 `firestore.rules` 내용을 복사해서
+   console.firebase.google.com → 프로젝트 → Firestore Database → [규칙] 탭에 붙여넣고 [게시].
+   (Cloud 콘솔 Firestore 화면에 '보안 규칙' 메뉴가 보이면 거기서 해도 같아요.)
+4. 프로젝트 ID 확인: Cloud 콘솔 첫 화면(대시보드) 또는 Firebase 콘솔 ⚙ 프로젝트 설정의 '프로젝트 ID' (이름이나 번호가 아니라 ID).
+5. `sync-config.js`의 `projectId: ''`에 붙여넣고 Commit changes.
+
+- 실시간이 아니라 10초마다, 그리고 앱을 다시 볼 때마다 다른 기기의 변경을 확인해요.
+- 무료 한도: 하루 읽기 5만 번, 쓰기 2만 번, 저장 1GiB. 개인용으로 넉넉해요.
+
+### 방법 ① 구글 드라이브 (Google Apps Script)
+1. https://script.google.com 접속 → 왼쪽 위 [새 프로젝트].
+2. 편집기에 있던 `function myFunction() {}`를 모두 지우고, 이 저장소의 `google-apps-script/Code.gs` 내용을 통째로 붙여넣은 뒤 저장(디스크 아이콘).
+3. 오른쪽 위 [배포] → [새 배포] → 유형 선택 톱니바퀴 → [웹 앱].
+   - 다음 사용자 인증 정보로 실행: **나**
+   - 액세스 권한이 있는 사용자: **모든 사용자**
+   - [배포]
+4. [액세스 승인] → 내 계정 선택 → "Google에서 확인하지 않은 앱" 화면이 나오면 [고급] → [(프로젝트 이름)(으)로 이동(안전하지 않음)] → [허용].
+   내가 직접 만든 스크립트라서 나오는 안내이고, 이 스크립트는 내 드라이브의 aikatsu-parts-sync 폴더만 써요.
+5. 완료 화면의 **웹 앱 URL**(…/exec로 끝남)을 복사해, 저장소의 `sync-config.js`에서 `window.SYNC_GAS_URL = '여기';`에 붙여넣고 Commit changes.
+6. 확인: 웹 앱 URL을 브라우저 주소창에 열면 `aikatsu-parts-sync ready`가 보이면 성공이에요.
+
+- 구글 드라이브 방식은 실시간이 아니라 **15초마다, 그리고 앱을 다시 볼 때마다** 다른 기기의 변경을 확인해요.
+- 저장 공간은 내 구글 드라이브 용량(무료 15GB)을 써요.
+- Code.gs를 나중에 고쳤다면 [배포] → [배포 관리] → 연필 → 버전 '새 버전' → [배포]를 해야 반영돼요. (URL은 그대로)
+
+### 방법 ② Firebase Realtime Database (실시간, 선택)
+1. https://console.firebase.google.com → 프로젝트 → 왼쪽 메뉴에서 Realtime Database(데이터베이스 및 스토리지 아래) → 데이터베이스 만들기 → 잠금 모드.
+2. [규칙] 탭에 아래를 붙여넣고 [게시]:
+```json
+{
+  "rules": {
+    "sync": {
+      "$code": {
+        ".read": "$code.matches(/^[A-Z0-9]{5}-[A-Z0-9]{5}$/)",
+        ".write": "$code.matches(/^[A-Z0-9]{5}-[A-Z0-9]{5}$/)"
+      }
+    }
+  }
+}
+```
+3. [데이터] 탭 맨 위 주소를 `sync-config.js`의 `window.SYNC_DB_URL`에 붙여넣기.
+
+공통: 코드를 아는 사람만 그 코드의 목록을 읽고 쓸 수 있어요. 코드는 비밀번호처럼 다뤄 주세요.
+앱에서 만든 코드와 Claude 아티팩트에서 만든 코드는 저장소가 서로 달라서 섞어 쓸 수 없어요.
+
+## 백업 코드 쓰는 법
+- 첫 기기: 더보기 → [백업 코드] → [새 백업 코드 만들기]. 지금 목록과 사진이 올라가고, 이후 바뀔 때마다 자동 저장돼요.
+- 다른 기기: 같은 화면에서 코드를 입력 → [코드 입력하고 연결하기]. 그 기기에 이미 파츠가 있으면 합치기/바꾸기를 고를 수 있어요.
+- 연결된 기기끼리는 한쪽에서 바꾸면 몇 초 안에 다른 쪽에 들어가요. 오프라인에서 바꾼 것은 인터넷이 다시 연결되면 올라가요.
+- 두 기기에서 거의 동시에 다른 것을 바꾸면 나중에 저장된 쪽이 남아요.
+
 ## 아티팩트에서 정리한 파츠를 사이트에 넣기
 1. Claude 아티팩트(마이캐 파츠 노트)에서 설정 탭 → "이미지도 함께 백업"을 켜고 → [백업 코드 복사]를 누릅니다.
 2. GitHub 저장소에서 `Add file` → `Create new file`을 누르고, 파일 이름을 `parts-data.json`으로 적습니다.
@@ -57,7 +116,7 @@
 더보기 → [최신 버전 다시 받기]를 누르면 저장된 화면을 지우고 새로 받아요. `parts-data.json`도 다시 확인해 반영하고, 내 보유 기록은 그대로 남아요.
 
 ## 업데이트할 때
-`index.html`을 고친 뒤 `sw.js` 맨 위의 `CACHE = 'parts-note-v14'` 숫자를 올려 주세요.
+`index.html`을 고친 뒤 `sw.js` 맨 위의 `CACHE = 'parts-note-v17'` 숫자를 올려 주세요.
 그래야 이미 설치한 사람에게도 새 버전이 확실히 반영됩니다.
 
 ## 데이터 저장 방식

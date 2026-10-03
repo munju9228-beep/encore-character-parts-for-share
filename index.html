@@ -12,6 +12,7 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="파츠 노트">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
+<script src="sync-config.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Jua&family=Gowun+Dodum&display=swap" rel="stylesheet">
@@ -65,6 +66,21 @@ header.top{padding:22px 0 14px}
 .brand h1{font-family:"Jua",sans-serif;font-weight:400;font-size:clamp(28px,7vw,40px);line-height:1;margin:0;letter-spacing:-.5px}
 .brand h1 .star{color:var(--pink)}
 .brand p{margin:6px 0 0;color:var(--ink-soft);font-size:14px}
+.syncpill{display:inline-flex;align-items:center;gap:5px;border:2px solid var(--line);background:var(--paper);border-radius:99px;padding:4px 11px 4px 8px;font-size:12.5px;color:var(--ink-soft);white-space:nowrap}
+.syncpill svg{width:17px;height:17px}
+.syncpill.ok{color:var(--accent-ink);border-color:var(--pink-soft)}
+.syncpill.busy svg{animation:pulse 1s ease-in-out infinite}
+.syncpill.bad{color:#D23B5B}
+@keyframes pulse{50%{opacity:.35}}
+@media (prefers-reduced-motion:reduce){.syncpill.busy svg{animation:none}}
+.codebox{font-family:"Jua",sans-serif;font-size:30px;letter-spacing:2px;text-align:center;background:var(--pink-soft);color:var(--accent-ink);border-radius:16px;padding:14px 8px;margin:4px 0 10px;user-select:all}
+.codein{width:100%;font-family:"Jua",sans-serif;font-size:22px;letter-spacing:2px;text-align:center;text-transform:uppercase;padding:12px;border-radius:14px;border:2px solid var(--line);background:var(--bg)}
+.syncst{font-size:13px;color:var(--ink-soft);text-align:center;margin:0 0 12px;min-height:1.4em}
+.syncst.bad{color:#D23B5B}
+.or{display:flex;align-items:center;gap:10px;color:var(--ink-soft);font-size:13px;margin:16px 0 10px}
+.or::before,.or::after{content:"";flex:1;border-top:1px dashed var(--line)}
+.stack{display:flex;flex-direction:column;gap:8px}
+.stack .btn{width:100%}
 .meter{margin-top:16px;background:var(--paper);border:2px solid var(--line);border-radius:18px;padding:12px 14px;display:flex;align-items:center;gap:14px}
 .meter .num{font-family:"Jua",sans-serif;font-size:28px;line-height:1;white-space:nowrap}
 .meter .num small{font-size:15px;color:var(--ink-soft)}
@@ -307,6 +323,7 @@ textarea.io{width:100%;min-height:110px;padding:10px;border-radius:12px;border:2
         <h1>마이캐 파츠 노트<span class="star">★</span></h1>
         <p>아이카츠! 앙코르 마이캐릭터 파츠를 모으고 정리해요</p>
       </div>
+      <button class="syncpill hidden" id="syncPill" aria-label="백업 코드 연결 상태"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 18a4.5 4.5 0 0 1-.6-8.96A6 6 0 0 1 18 8.5a4 4 0 0 1-.5 9.5z"/><path d="M9.5 13.5l2 2 3.5-3.5"/></svg><span id="syncPillT">연결됨</span></button>
     </div>
     <div class="meter" aria-live="polite">
       <div class="num" id="mNum">0<small> / 0</small></div>
@@ -375,6 +392,12 @@ textarea.io{width:100%;min-height:110px;padding:10px;border-radius:12px;border:2
         <input id="newAcq" placeholder="새 획득 경로" aria-label="새 획득 경로">
         <button class="btn" id="addAcq">추가</button>
       </div>
+    </div>
+    <div class="card">
+      <h3>백업 코드 (기기 연결)</h3>
+      <p>코드 하나로 핸드폰, 태블릿 같은 여러 기기의 목록과 사진이 자동으로 맞춰져요. 한 기기에서 바꾸면 다른 기기에도 바로 들어가요.</p>
+      <p id="syncCardSt" style="margin-bottom:10px"></p>
+      <button class="btn" id="syncOpen">백업 코드 열기</button>
     </div>
     <div class="card">
       <h3>백업하고 옮기기</h3>
@@ -454,6 +477,7 @@ textarea.io{width:100%;min-height:110px;padding:10px;border-radius:12px;border:2
       <div class="seg" id="mMode" role="group" aria-label="불러오는 방식"><button type="button" data-v="merge">불러올 때 합치기</button><button type="button" data-v="replace">불러올 때 바꾸기</button></div>
     </div>
     <div class="menu">
+      <button type="button" data-act="sync"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 18a4.5 4.5 0 0 1-.6-8.96A6 6 0 0 1 18 8.5a4 4 0 0 1-.5 9.5z"/><path d="M12 11v5M9.5 13.5L12 11l2.5 2.5"/></svg></span><span><b>백업 코드</b><small id="mSyncDesc">코드 하나로 여러 기기의 목록과 사진을 자동으로 맞춰요</small></span></button>
       <button type="button" data-act="bulk"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="6" width="14" height="14" rx="2"/><path d="M7 3h12a2 2 0 0 1 2 2v12"/><path d="M3 16l4-4 4 4 3-3 3 3"/></svg></span><span><b>이미지 한 번에 등록</b><small>사진 여러 장을 골라 파츠로 한꺼번에 등록해요</small></span></button>
       <button type="button" data-act="save"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11"/><path d="M7 10l5 5 5-5"/><path d="M5 20h14"/></svg></span><span><b>백업 파일 저장하기</b><small>지금 목록을 .json 파일로 기기에 저장해요</small></span></button>
       <label class="mi" for="mFile"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20V9"/><path d="M7 14l5-5 5 5"/><path d="M5 4h14"/></svg></span><span><b>백업 파일 불러오기</b><small>저장해 둔 .json 파일로 목록을 되살려요</small></span></label>
@@ -531,6 +555,14 @@ textarea.io{width:100%;min-height:110px;padding:10px;border-radius:12px;border:2
   </div>
 </dialog>
 
+<dialog id="dSync" aria-labelledby="dSyncT">
+  <div class="sheet">
+    <h2 id="dSyncT">백업 코드</h2>
+    <div id="syncBox"></div>
+    <div class="actions"><button type="button" class="btn" id="syncClose" style="flex:1">닫기</button></div>
+  </div>
+</dialog>
+
 <dialog id="dNews" aria-labelledby="dNewsT">
   <form class="sheet" method="dialog" id="fNews">
     <h2 id="dNewsT">소식 쓰기</h2>
@@ -592,6 +624,13 @@ const $=s=>document.querySelector(s);
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,7);
 
+/* sync state (백업 코드) */
+const SYNC_KEY='aikatsu-encore-sync';
+const syncBlank=()=>({code:'',rev:'',sig:{},remote:{},dirty:false,dirtyAt:0,at:0});
+let SYNC=(()=>{try{return Object.assign(syncBlank(),JSON.parse(localStorage.getItem(SYNC_KEY)||'{}'))}catch(e){return syncBlank()}})();
+function saveSync(){try{localStorage.setItem(SYNC_KEY,JSON.stringify(SYNC))}catch(e){}}
+let pushTimer=null,pushing=false,pushAgain=false,unwatch=null,syncSt='idle',syncMsg='',BE;
+const DEVICE=(()=>{try{let d=localStorage.getItem('aikatsu-encore-device');if(!d){d=Math.random().toString(36).slice(2,10);localStorage.setItem('aikatsu-encore-device',d)}return d}catch(e){return 'x'}})();
 let S=load();
 let view={twave:null,tsec:'all',tab:'parts',q:'',status:'all',cat:'all',acq:'all',wave:'all'};
 let editId=null, editLook=null, pStatus='owned', pImg;
@@ -606,14 +645,15 @@ const IDB=(()=>{let dbp;
     all:()=>db().then(d=>new Promise((res,rej)=>{const out=new Map();const c=d.transaction('img').objectStore('img').openCursor();c.onsuccess=()=>{const cur=c.result;if(cur){out.set(cur.key,cur.value);cur.continue()}else res(out)};c.onerror=()=>rej(c.error)}))};
 })();
 let persisted=false;
-async function setImg(id,blob){
+async function setImg(id,blob,sig,fromRemote){
   await IDB.put(id,blob);
   if(IMG.has(id))URL.revokeObjectURL(IMG.get(id));
   IMG.set(id,URL.createObjectURL(blob));
+  SYNC.sig[id]=sig||uid();saveSync();if(!fromRemote)schedulePush();
   if(!persisted&&navigator.storage&&navigator.storage.persist){persisted=true;navigator.storage.persist().catch(()=>{})}
 }
-async function delImg(id){if(IMG.has(id)){URL.revokeObjectURL(IMG.get(id));IMG.delete(id)}try{await IDB.del(id)}catch(e){}}
-async function clearImgs(){IMG.forEach(u=>URL.revokeObjectURL(u));IMG.clear();try{await IDB.clear()}catch(e){}}
+async function delImg(id,fromRemote){if(IMG.has(id)){URL.revokeObjectURL(IMG.get(id));IMG.delete(id)}if(SYNC.sig[id]){delete SYNC.sig[id];saveSync();if(!fromRemote)schedulePush()}try{await IDB.del(id)}catch(e){}}
+async function clearImgs(){IMG.forEach(u=>URL.revokeObjectURL(u));IMG.clear();SYNC.sig={};saveSync();schedulePush();try{await IDB.clear()}catch(e){}}
 async function shrink(file,max=360){
   let src;
   try{src=await createImageBitmap(file)}catch(e){src=await new Promise((res,rej)=>{const i=new Image();i.onload=()=>res(i);i.onerror=()=>rej(new Error('bad image'));i.src=URL.createObjectURL(file)})}
@@ -653,7 +693,8 @@ function normalize(d){
   o.parts.forEach(p=>{if(!o.cats.includes(p.cat))o.cats.push(p.cat);if(!o.acq.includes(p.acq))o.acq.push(p.acq)});
   return o;
 }
-function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){toast('저장 공간을 쓸 수 없어요. 백업 코드를 복사해 두세요.')}}
+function saveLocal(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){toast('저장 공간을 쓸 수 없어요. 백업 파일을 저장해 두세요.')}}
+function save(){saveLocal();schedulePush()}
 function toast(m){const t=$('#toast');t.textContent=m;t.classList.add('on');clearTimeout(t._h);t._h=setTimeout(()=>t.classList.remove('on'),1800)}
 
 /* theme */
@@ -933,6 +974,242 @@ document.addEventListener('dragleave',()=>{if(dragDepth&&--dragDepth===0)documen
 document.addEventListener('dragover',e=>{if(hasFiles(e))e.preventDefault()});
 document.addEventListener('drop',e=>{if(!hasFiles(e))return;e.preventDefault();dragDepth=0;document.body.classList.remove('dropping');if(view.tab==='parts'&&!document.querySelector('dialog[open]'))openBulk(e.dataTransfer.files)});
 
+/* ===== 백업 코드 동기화 ===== */
+const SYNC_DB_URL=(window.SYNC_DB_URL||'');
+const SYNC_GAS_URL=(window.SYNC_GAS_URL||'');
+const SYNC_FS=(window.SYNC_FIRESTORE||null);
+const CODE_ABC='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+function genCode(){const a=new Uint32Array(10);crypto.getRandomValues(a);const s=[...a].map(v=>CODE_ABC[v%32]).join('');return s.slice(0,5)+'-'+s.slice(5)}
+function cleanCode(v){const s=String(v||'').toUpperCase().replace(/[^A-Z0-9]/g,'');return s.length===10?s.slice(0,5)+'-'+s.slice(5):null}
+function firebaseBackend(base){
+  const u=p=>`${base}/sync/${p}.json`;
+  const j=async r=>{if(!r.ok)throw new Error('http '+r.status);return r.json()};
+  const be={kind:'app',
+    getMeta:c=>fetch(u(c+'/meta'),{cache:'no-store'}).then(j),
+    setMeta:(c,m)=>fetch(u(c+'/meta'),{method:'PUT',body:JSON.stringify(m)}).then(j),
+    getImg:(c,id)=>fetch(u(`${c}/img/${id}`),{cache:'no-store'}).then(j),
+    setImg:(c,id,o)=>fetch(u(`${c}/img/${id}`),{method:'PUT',body:JSON.stringify(o)}).then(j),
+    delImg:(c,id)=>fetch(u(`${c}/img/${id}`),{method:'DELETE'}).then(j),
+    watch(c,cb){let es;const refetch=()=>be.getMeta(c).then(cb).catch(()=>setSyncSt('offline'));
+      try{es=new EventSource(u(c+'/meta'));
+        es.addEventListener('put',e=>{try{const m=JSON.parse(e.data);if(m.path==='/')cb(m.data);else refetch()}catch(x){}});
+        es.addEventListener('patch',refetch);es.onerror=()=>{if(syncSt==='idle')setSyncSt('offline')};es.onopen=()=>{if(syncSt==='offline')setSyncSt('idle')}}catch(e){}
+      const vis=()=>{if(document.visibilityState==='visible')refetch()};document.addEventListener('visibilitychange',vis);
+      const iv=setInterval(refetch,90000);
+      return ()=>{try{es&&es.close()}catch(e){}clearInterval(iv);document.removeEventListener('visibilitychange',vis)}}};
+  return be;
+}
+function firestoreBackend(cfg){
+  // Cloud Firestore REST. 목록은 조각(st/c0..)으로, 사진은 img/<파츠id> 문서로 저장하고 10초마다 확인해요.
+  const pid=String(cfg.projectId).trim(),dbid=String(cfg.databaseId||'(default)').trim();
+  const base=`https://firestore.googleapis.com/v1/projects/${encodeURIComponent(pid)}/databases/${encodeURIComponent(dbid)}/documents/`;
+  const q=cfg.apiKey?`?key=${encodeURIComponent(cfg.apiKey)}`:'';
+  const CH=300000;
+  const enc=o=>({fields:Object.fromEntries(Object.entries(o).map(([k,v])=>[k,{stringValue:String(v)}]))});
+  const dec=d=>{const o={};for(const [k,v] of Object.entries((d&&d.fields)||{}))o[k]=v.stringValue??v.integerValue??null;return o};
+  async function req(path,opt){const r=await fetch(base+path+q,{cache:'no-store',...opt});
+    if(r.status===404)return null;
+    if(!r.ok){let m='http '+r.status;try{const e=await r.json();m=(e.error&&e.error.status)||m}catch(x){}throw new Error(m)}
+    return opt&&opt.method==='DELETE'?true:r.json()}
+  const getDoc=p=>req(p).then(d=>d?dec(d):null);
+  const putDoc=(p,o)=>req(p,{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify(enc(o))});
+  async function head(c){const h=await getDoc('sync/'+c);if(!h)return null;return{rev:h.rev,at:+h.at||0,by:h.by,chunks:+h.chunks||0,imgs:JSON.parse(h.imgs||'{}')}}
+  const be={kind:'app',
+    async getMeta(c){const h=await head(c);if(!h)return null;let s='';
+      for(let i=0;i<h.chunks;i++){const d=await getDoc(`sync/${c}/st/c${i}`);if(!d||d.rev!==h.rev)throw new Error('stale');s+=d.s}
+      return{...h,state:s}},
+    async setMeta(c,m){const n=Math.max(1,Math.ceil(m.state.length/CH));
+      for(let i=0;i<n;i++)await putDoc(`sync/${c}/st/c${i}`,{rev:m.rev,s:m.state.slice(i*CH,(i+1)*CH)});
+      await putDoc('sync/'+c,{rev:m.rev,at:m.at,by:m.by,chunks:n,imgs:JSON.stringify(m.imgs||{})})},
+    getImg:(c,id)=>getDoc(`sync/${c}/img/${id}`),
+    setImg:(c,id,o)=>putDoc(`sync/${c}/img/${id}`,{sig:o.sig,d:o.d}),
+    delImg:(c,id)=>req(`sync/${c}/img/${id}`,{method:'DELETE'}),
+    watch(c,cb){let last='',busy=false;
+      const tick=async()=>{if(busy)return;busy=true;try{const h=await head(c);
+          if(syncSt==='offline')setSyncSt('idle');
+          if(h&&h.rev&&h.rev!==SYNC.rev&&h.rev!==last){last=h.rev;try{cb(await be.getMeta(c))}catch(e){last=''}}}catch(e){if(navigator.onLine===false)setSyncSt('offline')}busy=false};
+      const iv=setInterval(()=>{if(document.visibilityState==='visible')tick()},10000);
+      const vis=()=>{if(document.visibilityState==='visible')tick()};document.addEventListener('visibilitychange',vis);window.addEventListener('focus',vis);
+      return ()=>{clearInterval(iv);document.removeEventListener('visibilitychange',vis);window.removeEventListener('focus',vis)}}};
+  return be;
+}
+function gasBackend(url){
+  // Google Apps Script 웹 앱 (구글 드라이브에 저장). 실시간 대신 15초마다 확인해요.
+  const j=async r=>{if(!r.ok)throw new Error('http '+r.status);const o=await r.json();if(!o||o.ok!==true)throw new Error((o&&o.error)||'bad');return o.data};
+  const get=p=>fetch(url+(url.includes('?')?'&':'?')+new URLSearchParams({...p,_:Date.now()}),{cache:'no-store',redirect:'follow'}).then(j);
+  const post=b=>fetch(url,{method:'POST',body:JSON.stringify(b),redirect:'follow'}).then(j);
+  const be={kind:'app',
+    getMeta:c=>get({op:'meta',code:c}),
+    setMeta:(c,m)=>post({op:'setMeta',code:c,data:m}),
+    getImg:(c,id)=>get({op:'img',code:c,id}),
+    setImg:(c,id,o)=>post({op:'setImg',code:c,id,data:o}),
+    delImg:(c,id)=>post({op:'delImg',code:c,id}),
+    watch(c,cb){let last='',busy=false;
+      const tick=async()=>{if(busy)return;busy=true;try{const rev=await get({op:'rev',code:c});
+          if(syncSt==='offline')setSyncSt('idle');
+          if(rev&&rev!==SYNC.rev&&rev!==last){last=rev;cb(await be.getMeta(c))}}catch(e){if(navigator.onLine===false)setSyncSt('offline')}busy=false};
+      const iv=setInterval(()=>{if(document.visibilityState==='visible')tick()},15000);
+      const vis=()=>{if(document.visibilityState==='visible')tick()};document.addEventListener('visibilitychange',vis);window.addEventListener('focus',vis);
+      return ()=>{clearInterval(iv);document.removeEventListener('visibilitychange',vis);window.removeEventListener('focus',vis)}}};
+  return be;
+}
+function artifactBackend(db){
+  const CH=60000,md=c=>db.doc('sync/'+c);
+  async function expand(m,c){if(!m)return null;m=JSON.parse(JSON.stringify(m));
+    if(m.chunks){let s='';for(let i=0;i<m.chunks;i++){const d=await db.doc(`sync/${c}/st/c${i}`).get();const v=d.exists?d.data():null;if(!v||v.rev!==m.rev)throw new Error('stale');s+=v.s}m.state=s}
+    return m}
+  const be={kind:'artifact',
+    async getMeta(c){const s=await md(c).get();return s.exists?expand(s.data(),c):null},
+    async setMeta(c,m){const body={...m};if(m.state.length>CH){const n=Math.ceil(m.state.length/CH);for(let i=0;i<n;i++)await db.doc(`sync/${c}/st/c${i}`).set({rev:m.rev,s:m.state.slice(i*CH,(i+1)*CH)});body.state='';body.chunks=n}else body.chunks=0;await md(c).set(body)},
+    async getImg(c,id){const s=await db.doc(`sync/${c}/img/${id}`).get();return s.exists?s.data():null},
+    setImg:(c,id,o)=>db.doc(`sync/${c}/img/${id}`).set(o),
+    delImg:(c,id)=>db.doc(`sync/${c}/img/${id}`).delete(),
+    watch(c,cb){return md(c).onSnapshot(s=>{if(s.metadata.hasPendingWrites||!s.exists)return;
+      expand(s.data(),c).then(cb).catch(()=>setTimeout(()=>be.getMeta(c).then(cb).catch(()=>{}),2000))},()=>setSyncSt('offline'))}};
+  return be;
+}
+async function getBackend(){
+  if(BE!==undefined)return BE;
+  if(SYNC_FS&&SYNC_FS.projectId){BE=firestoreBackend(SYNC_FS);return BE}
+  if(SYNC_GAS_URL){BE=gasBackend(String(SYNC_GAS_URL).trim());return BE}
+  if(SYNC_DB_URL){BE=firebaseBackend(String(SYNC_DB_URL).replace(/\/+$/,''));return BE}
+  if(window.claude&&typeof window.claude.use==='function'){try{const db=await window.claude.use('db');BE=db?artifactBackend(db):null}catch(e){BE=null}return BE}
+  BE=null;return BE;
+}
+function setSyncSt(s,msg){syncSt=s;syncMsg=msg||'';renderSyncPill();const el=$('#syncSt');if(el)el.textContent=syncLine(),el.classList.toggle('bad',s==='error'||s==='offline')}
+function ago(t){if(!t)return'';const s=Math.round((Date.now()-t)/1000);return s<60?'방금':s<3600?Math.floor(s/60)+'분 전':s<86400?Math.floor(s/3600)+'시간 전':new Date(t).toLocaleDateString('ko-KR')}
+function syncLine(){if(syncMsg)return syncMsg;return syncSt==='pushing'?'저장하는 중…':syncSt==='pulling'?'다른 기기의 변경을 받는 중…':syncSt==='offline'?'인터넷 연결을 기다리는 중이에요. 다시 연결되면 자동으로 맞춰요':syncSt==='error'?'동기화하지 못했어요. 잠시 후 다시 시도해요':SYNC.at?`모든 기기와 맞춰졌어요 (${ago(SYNC.at)})`:'연결됨'}
+function renderSyncPill(){const p=$('#syncPill');p.classList.toggle('hidden',!SYNC.code);if(!SYNC.code)return;
+  p.classList.toggle('busy',syncSt==='pushing'||syncSt==='pulling');p.classList.toggle('ok',syncSt==='idle');p.classList.toggle('bad',syncSt==='error'||syncSt==='offline');
+  $('#syncPillT').textContent=syncSt==='pushing'?'저장 중':syncSt==='pulling'?'받는 중':syncSt==='offline'?'오프라인':syncSt==='error'?'동기화 오류':'동기화됨';
+  const cs=$('#syncCardSt');if(cs)cs.textContent=SYNC.code?`연결된 코드: ${SYNC.code}`:'아직 연결된 백업 코드가 없어요.';
+  const md=$('#mSyncDesc');if(md)md.textContent=SYNC.code?`${SYNC.code} 연결됨. 여러 기기가 자동으로 맞춰져요`:'코드 하나로 여러 기기의 목록과 사진을 자동으로 맞춰요'}
+function schedulePush(){if(!SYNC.code)return;SYNC.dirty=true;SYNC.dirtyAt=Date.now();saveSync();clearTimeout(pushTimer);pushTimer=setTimeout(()=>{pushTimer=null;pushNow()},1200)}
+async function pushNow(){
+  if(!SYNC.code)return;if(pushing){pushAgain=true;return}
+  const be=await getBackend();if(!be)return;
+  pushing=true;setSyncSt('pushing');const code=SYNC.code;
+  try{
+    IMG.forEach((_,id)=>{if(!SYNC.sig[id])SYNC.sig[id]=uid()});
+    Object.keys(SYNC.sig).forEach(id=>{if(!IMG.has(id))delete SYNC.sig[id]});
+    const ids=Object.keys(SYNC.sig).filter(id=>SYNC.remote[id]!==SYNC.sig[id]);let n=0,fail=0;
+    for(const id of ids){const sig=SYNC.sig[id];try{const blob=await IDB.get(id);if(blob){await be.setImg(code,id,{sig,d:await toDataURL(blob)});SYNC.remote[id]=sig}}catch(e){fail++}
+      n++;if(ids.length>3)setSyncSt('pushing',`사진 올리는 중 ${n}/${ids.length}`)}
+    for(const id of Object.keys(SYNC.remote)){if(!SYNC.sig[id]){try{await be.delImg(code,id)}catch(e){}delete SYNC.remote[id]}}
+    if(code!==SYNC.code)throw new Error('changed');
+    const rev=uid(),st={...S};delete st.theme;
+    await be.setMeta(code,{v:1,rev,at:Date.now(),by:DEVICE,state:JSON.stringify(st),imgs:{...SYNC.remote}});
+    SYNC.rev=rev;SYNC.at=Date.now();if(!pushTimer){SYNC.dirty=false}saveSync();
+    setSyncSt('idle',fail?`사진 ${fail}장은 올리지 못했어요. 다음에 다시 시도해요`:'');
+  }catch(e){setSyncSt(navigator.onLine===false?'offline':'error')}
+  pushing=false;if(pushAgain){pushAgain=false;schedulePush()}
+}
+async function applyRemote(m,force){
+  if(!m||typeof m.state!=='string'||!m.state)return false;
+  if(!force&&(m.rev===SYNC.rev||pushTimer||pushing))return false;
+  let inc;try{inc=normalize(JSON.parse(m.state))}catch(e){return false}
+  const be=await getBackend();const code=SYNC.code;
+  setSyncSt('pulling');
+  const theme=S.theme;S=inc;S.theme=theme;saveLocal();applyTheme();render();
+  const rimgs=m.imgs||{};const ids=new Set(S.parts.map(p=>p.id));
+  const need=Object.keys(rimgs).filter(id=>ids.has(id)&&SYNC.sig[id]!==rimgs[id]);let n=0;
+  for(const id of need){try{const o=await be.getImg(code,id);if(o&&o.d)await setImg(id,await fromDataURL(o.d),o.sig||rimgs[id],true)}catch(e){}
+    n++;if(need.length>3)setSyncSt('pulling',`사진 받는 중 ${n}/${need.length}`);if(n%8===0)render()}
+  for(const id of [...IMG.keys()])if(!rimgs[id])await delImg(id,true);
+  SYNC.remote={...rimgs};SYNC.rev=m.rev;SYNC.at=Date.now();SYNC.dirty=false;saveSync();
+  setSyncSt('idle');render();return true;
+}
+function startWatch(){if(unwatch){try{unwatch()}catch(e){}unwatch=null}
+  if(!SYNC.code||!BE)return;const code=SYNC.code;
+  unwatch=BE.watch(code,m=>{if(code!==SYNC.code||!m)return;if(m.by!==DEVICE||m.rev!==SYNC.rev)applyRemote(m).then(ok=>{if(ok&&m.by!==DEVICE)toast('다른 기기에서 바뀐 내용을 받았어요')})});
+}
+async function syncStart(){
+  renderSyncPill();if(!SYNC.code)return;
+  const be=await getBackend();if(!be){setSyncSt('error','이 화면에서는 백업 코드 동기화를 쓸 수 없어요');return}
+  try{const m=await be.getMeta(SYNC.code);
+    if(m&&m.rev!==SYNC.rev){if(SYNC.dirty&&(SYNC.dirtyAt||0)>(m.at||0))schedulePush();else await applyRemote(m,true)}
+    else if(!m||SYNC.dirty)schedulePush();
+    else setSyncSt('idle');
+  }catch(e){setSyncSt('offline')}
+  startWatch();
+}
+let joinPending=null;
+async function renderSyncBox(){
+  const box=$('#syncBox');const be=await getBackend();
+  if(!be){box.innerHTML=SYNC_DB_URL===null&&SYNC_GAS_URL===null&&SYNC_FS===null&&!window.claude?`<p class="syncst">이 화면에서는 백업 코드를 쓸 수 없어요.</p>`:
+    `<p class="syncst">백업 코드를 쓰려면 사이트 관리자가 동기화 저장소(sync-config.js)를 먼저 설정해야 해요. 그동안은 백업 파일로 옮길 수 있어요.</p>`;return}
+  if(SYNC.code){
+    box.innerHTML=`<p class="syncst" style="margin-bottom:4px">이 기기에 연결된 백업 코드</p><div class="codebox" id="codeShow">${SYNC.code}</div>
+      <p class="syncst" id="syncSt"></p>
+      <div class="stack"><button class="btn primary" id="sCopy">코드 복사</button><button class="btn" id="sNow">지금 맞추기</button><button class="btn danger" id="sOff">이 기기 연결 끊기</button></div>
+      <p class="syncst" style="margin-top:12px;font-size:12px">다른 기기에서 이 코드를 입력하면 같은 목록과 사진을 쓸 수 있어요. 코드는 비밀번호처럼 나만 알고 있어야 해요.</p>`;
+    setSyncSt(syncSt,syncMsg);return}
+  if(joinPending){
+    box.innerHTML=`<div class="codebox">${joinPending.code}</div><p class="syncst">이 기기에도 파츠 ${S.parts.length}개가 있어요. 어떻게 할까요?</p>
+      <div class="stack"><button class="btn primary" id="sMerge">이 기기 목록과 합치기</button><button class="btn" id="sReplace">백업 코드의 목록으로 바꾸기</button><button class="btn" id="sBack">취소</button></div>
+      <p class="syncst" style="margin-top:12px;font-size:12px">합치기는 이 기기에만 있던 파츠와 사진을 백업 코드에 더해요. 바꾸기는 이 기기 목록을 지우고 백업 코드의 목록을 그대로 받아요.</p>`;return}
+  box.innerHTML=`<p class="syncst">코드를 만들면 지금 목록과 사진이 자동으로 저장되고, 바뀔 때마다 계속 저장돼요.</p>
+    <div class="stack"><button class="btn primary" id="sNew">새 백업 코드 만들기</button></div>
+    <div class="or">이미 코드가 있다면</div>
+    <input class="codein" id="sCode" placeholder="ABCDE-12345" maxlength="11" autocomplete="off" autocapitalize="characters" spellcheck="false" aria-label="백업 코드 입력">
+    <p class="syncst" id="syncSt"></p>
+    <div class="stack"><button class="btn primary" id="sJoin">코드 입력하고 연결하기</button></div>`;
+}
+async function openSync(){joinPending=null;await renderSyncBox();if(!$('#dSync').open)$('#dSync').showModal()}
+function busyBtn(b,on,label){if(!b)return;b.disabled=on;if(label)b.textContent=label}
+async function createCode(btn){
+  const be=await getBackend();if(!be)return;busyBtn(btn,true,'만드는 중…');
+  try{let code=genCode();for(let i=0;i<3;i++){if(!(await be.getMeta(code)))break;code=genCode()}
+    SYNC.code=code;SYNC.remote={};SYNC.rev='';saveSync();renderSyncPill();await renderSyncBox();
+    await pushNow();startWatch();toast('백업 코드를 만들었어요. 코드를 꼭 적어 두세요')}
+  catch(e){SYNC.code='';saveSync();renderSyncPill();toast(String(e&&e.message||'').includes('PERMISSION')?'저장소 규칙이 막고 있어요. 보안 규칙을 확인해 주세요':'코드를 만들지 못했어요. 인터넷 연결과 저장소 설정을 확인해 주세요');busyBtn(btn,false,'새 백업 코드 만들기')}
+}
+async function joinCode(code,mode){
+  const be=await getBackend();
+  setSyncSt('pulling','백업 코드를 확인하는 중…');
+  let m;try{m=await be.getMeta(code)}catch(e){setSyncSt('error','연결하지 못했어요. 인터넷 연결을 확인해 주세요');return}
+  if(!m){setSyncSt('error',be.kind==='app'?'없는 코드예요. 아티팩트에서 만든 코드는 아티팩트에서만 쓸 수 있어요':'없는 코드예요. GitHub 앱에서 만든 코드는 앱에서만 쓸 수 있어요');return}
+  if(!mode&&S.parts.length){joinPending={code,m};return renderSyncBox()}
+  joinPending=null;
+  const keyOf=p=>p.cat+'|'+dn(p);let extra=[],marks=[];
+  if(mode==='merge'){let rs;try{rs=normalize(JSON.parse(m.state))}catch(e){rs={parts:[],cats:[],acq:[],news:[]}}
+    const rk=new Map(rs.parts.map(p=>[keyOf(p),p]));
+    for(const p of S.parts){const rp=rk.get(keyOf(p));const blob=IMG.has(p.id)?await IDB.get(p.id).catch(()=>null):null;
+      if(rp)marks.push({id:rp.id,own:p.status==='owned',fav:p.fav,blob:(m.imgs||{})[rp.id]?null:blob});else extra.push({p:{...p},blob})}
+    extra.cats=S.cats;extra.acq=S.acq;extra.news=S.news;}
+  SYNC.code=code;SYNC.remote={};SYNC.rev='';SYNC.dirty=false;saveSync();renderSyncPill();
+  await renderSyncBox();
+  await applyRemote(m,true);
+  if(mode==='merge'){
+    for(const k of marks){const p=S.parts.find(x=>x.id===k.id);if(!p)continue;if(k.own)p.status='owned';if(k.fav)p.fav=true;if(k.blob)await setImg(p.id,k.blob)}
+    for(const e of extra){S.parts.push(e.p);if(e.blob)await setImg(e.p.id,e.blob)}
+    (extra.cats||[]).forEach(c=>{if(!S.cats.includes(c))S.cats.push(c)});(extra.acq||[]).forEach(a=>{if(!S.acq.includes(a))S.acq.push(a)});
+    (extra.news||[]).forEach(n=>{if(!S.news.some(x=>x.id===n.id))S.news.push(n)});
+    save();render();
+  }
+  startWatch();toast(mode==='merge'?'합쳐서 연결했어요. 이제 자동으로 맞춰져요':'연결했어요. 이제 자동으로 맞춰져요');
+}
+function disconnect(){
+  if(!confirm('이 기기의 연결을 끊을까요? 이 기기에 있는 목록과 사진은 그대로 남고, 다른 기기와 더 이상 맞춰지지 않아요.'))return;
+  if(unwatch){try{unwatch()}catch(e){}unwatch=null}clearTimeout(pushTimer);pushTimer=null;
+  const sig=SYNC.sig;SYNC=syncBlank();SYNC.sig=sig;saveSync();setSyncSt('idle');renderSyncBox();toast('연결을 끊었어요')}
+$('#syncBox').addEventListener('click',async e=>{
+  const b=e.target.closest('button');if(!b)return;
+  if(b.id==='sNew')return createCode(b);
+  if(b.id==='sJoin'){const c=cleanCode($('#sCode').value);if(!c){setSyncSt('error','코드 10자리를 확인해 주세요 (예: ABCDE-12345)');return}busyBtn(b,true,'확인하는 중…');await joinCode(c);busyBtn($('#sJoin'),false,'코드 입력하고 연결하기');return}
+  if(b.id==='sMerge'||b.id==='sReplace'){const jp=joinPending;if(!jp)return;if(b.id==='sReplace'&&!confirm('이 기기의 목록과 사진을 지우고 백업 코드의 목록으로 바꿀까요?'))return;
+    document.querySelectorAll('#syncBox button').forEach(x=>x.disabled=true);await joinCode(jp.code,b.id==='sMerge'?'merge':'replace');return}
+  if(b.id==='sBack'){joinPending=null;return renderSyncBox()}
+  if(b.id==='sCopy')return copyText(SYNC.code,'백업 코드를 복사했어요');
+  if(b.id==='sNow'){busyBtn(b,true);try{const be=await getBackend();const m=await be.getMeta(SYNC.code);if(m&&m.rev!==SYNC.rev&&!SYNC.dirty)await applyRemote(m,true);else await pushNow()}catch(err){setSyncSt('offline')}busyBtn(b,false);return}
+  if(b.id==='sOff')return disconnect();
+});
+$('#syncBox').addEventListener('input',e=>{if(e.target.id!=='sCode')return;const v=e.target.value.toUpperCase().replace(/[^A-Z0-9]/g,'').slice(0,10);e.target.value=v.length>5?v.slice(0,5)+'-'+v.slice(5):v});
+$('#syncBox').addEventListener('keydown',e=>{if(e.target.id==='sCode'&&e.key==='Enter'){e.preventDefault();$('#sJoin').click()}});
+$('#syncClose').onclick=()=>$('#dSync').close();
+$('#syncPill').onclick=openSync;$('#syncOpen').onclick=openSync;
+window.addEventListener('online',()=>{if(SYNC.code){if(SYNC.dirty)schedulePush();setSyncSt('idle')}});
+
 /* info: 소식 */
 let editNews=null,nKind='update';view.ntype='all';
 const fmtDate=d=>d?d.replace(/-/g,'.'):'';
@@ -1096,6 +1373,7 @@ async function refreshApp(){
 $('#dMore').addEventListener('click',async e=>{
   const b=e.target.closest('[data-act]');if(!b)return;const act=b.dataset.act,withImg=$('#mImg').checked;
   if(act==='bulk'){$('#dMore').close();openBulk()}
+  if(act==='sync'){$('#dMore').close();openSync()}
   if(act==='save'){b.disabled=true;try{await saveBackup(withImg)}finally{b.disabled=false}}
   if(act==='copy'){b.disabled=true;try{const t=await exportText(withImg);await copyText(t,withImg&&IMG.size?'사진까지 포함해 목록을 복사했어요':'목록을 복사했어요')}finally{b.disabled=false}}
   if(act==='paste'){$('#dMore').close();$('#dPasteT').textContent='목록 붙여 넣기';$('#pasteGo').classList.remove('hidden');$('#pasteIo').value='';$('#dPaste').showModal();
@@ -1104,7 +1382,7 @@ $('#dMore').addEventListener('click',async e=>{
 });
 $('#pasteCancel').onclick=()=>$('#dPaste').close();
 $('#fPaste').addEventListener('submit',async e=>{e.preventDefault();const t=$('#pasteIo').value.trim();if(!t)return toast('먼저 목록 코드를 붙여넣어 주세요');$('#dPaste').close();await doImport(t,importMode==='merge')});
-['#dPart','#dLook','#dBulk','#dMore','#dPaste','#dNews','#dView'].forEach(s=>$(s).addEventListener('click',e=>{if(e.target===e.currentTarget)e.currentTarget.close()}));
+['#dPart','#dLook','#dBulk','#dMore','#dPaste','#dNews','#dView','#dSync'].forEach(s=>$(s).addEventListener('click',e=>{if(e.target===e.currentTarget)e.currentTarget.close()}));
 applyTheme();render();
 const SEED_URL='./parts-data.json', SEED_KEY='aikatsu-encore-seed';
 function hashStr(s){let h=5381;for(let i=0;i<s.length;i++)h=((h<<5)+h+s.charCodeAt(i))|0;return (h>>>0).toString(36)+'-'+s.length}
@@ -1137,7 +1415,7 @@ async function applySeed(){
   try{localStorage.setItem(SEED_KEY,h)}catch(e){}
   applyTheme();render();if(msg)toast(msg);
 }
-(window.indexedDB?IDB.all().then(m=>{const ids=new Set(S.parts.map(p=>p.id));m.forEach((b,k)=>{if(ids.has(k))IMG.set(k,URL.createObjectURL(b));else IDB.del(k).catch(()=>{})});if(m.size)render()}).catch(()=>{}):Promise.resolve()).then(fixDupes).then(applySeed);
+(window.indexedDB?IDB.all().then(m=>{const ids=new Set(S.parts.map(p=>p.id));m.forEach((b,k)=>{if(ids.has(k))IMG.set(k,URL.createObjectURL(b));else IDB.del(k).catch(()=>{})});if(m.size)render()}).catch(()=>{}):Promise.resolve()).then(fixDupes).then(syncStart).then(applySeed);
 async function fixDupes(){
   const FLAG='aikatsu-encore-nfc-fix1';let done=false;try{done=!!localStorage.getItem(FLAG)}catch(e){}
   if(done)return;
