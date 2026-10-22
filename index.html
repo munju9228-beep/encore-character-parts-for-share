@@ -3,14 +3,14 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>마이캐 파츠 노트</title>
+<title>아이카츠! 앙코르 마이캐릭터 파츠</title>
 <link rel="manifest" href="manifest.webmanifest">
 <meta name="theme-color" content="#FF4F9A">
 <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="icons/icon-192.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-title" content="파츠 노트">
+<meta name="apple-mobile-web-app-title" content="마이캐 파츠">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <script src="sync-config.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -63,6 +63,7 @@ button{cursor:pointer}
 /* header */
 header.top{padding:22px 0 14px}
 .brand{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.brand h1 small{display:block;font-size:.46em;letter-spacing:0;color:var(--accent-ink);margin-bottom:6px}
 .brand h1{font-family:"Jua",sans-serif;font-weight:400;font-size:clamp(28px,7vw,40px);line-height:1;margin:0;letter-spacing:-.5px}
 .brand h1 .star{color:var(--pink)}
 .brand p{margin:6px 0 0;color:var(--ink-soft);font-size:14px}
@@ -193,6 +194,7 @@ nav.tabs button[aria-selected="true"]{background:var(--ink);color:var(--bg)}
 .pv-act .seg{flex:1}
 .pv-act .seg button{padding:11px 4px;font-family:"Jua",sans-serif;font-size:16px}
 .pv-act .seg button[data-v="owned"][aria-pressed="true"]{background:var(--gold);border-color:var(--gold);color:#3A2A00}
+.nb mark,.news h3 mark{background:color-mix(in srgb,var(--gold) 45%,transparent);color:inherit;border-radius:3px;padding:0 1px}
 .news{background:var(--paper);border:2px solid var(--line);border-radius:18px;padding:14px 16px;margin-bottom:10px}
 .news.pin{border-color:var(--pink)}
 .news-h{display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-size:12px;color:var(--ink-soft)}
@@ -349,8 +351,8 @@ textarea.io{width:100%;min-height:110px;padding:10px;border-radius:12px;border:2
   <header class="top">
     <div class="brand">
       <div>
-        <h1>마이캐 파츠 노트<span class="star">★</span></h1>
-        <p>아이카츠! 앙코르 마이캐릭터 파츠를 모으고 정리해요</p>
+        <h1><small>아이카츠! 앙코르</small>마이캐릭터 파츠<span class="star">★</span></h1>
+        <p>보유 파츠를 모으고 정리해요</p>
       </div>
       <button class="syncpill hidden" id="syncPill" aria-label="백업 코드 연결 상태"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 18a4.5 4.5 0 0 1-.6-8.96A6 6 0 0 1 18 8.5a4 4 0 0 1-.5 9.5z"/><path d="M9.5 13.5l2 2 3.5-3.5"/></svg><span id="syncPillT">연결됨</span></button>
     </div>
@@ -400,7 +402,7 @@ textarea.io{width:100%;min-height:110px;padding:10px;border-radius:12px;border:2
 
   <!-- INFO -->
   <section id="v-info" class="hidden">
-    <div class="tools"><div class="chips" id="nType" role="group" aria-label="소식 종류"></div></div>
+    <div class="tools"><div class="search"><input id="nq" type="search" placeholder="소식 검색 (제목, 내용, 날짜)" aria-label="소식 검색"></div><div class="chips" id="nType" role="group" aria-label="소식 종류"></div></div>
     <div id="news"></div>
   </section>
 
@@ -1321,18 +1323,25 @@ let editNews=null,nKind='update';view.ntype='all';
 const fmtDate=d=>d?d.replace(/-/g,'.'):'';
 const today=()=>new Date(Date.now()-new Date().getTimezoneOffset()*60000).toISOString().slice(0,10);
 function newsSorted(){return S.news.slice().sort((a,b)=>(b.pin-a.pin)||b.date.localeCompare(a.date)||(b.t-a.t))}
+view.nq='';
+const newsText=n=>nk([n.title,n.body,n.date,fmtDate(n.date),NKIND[n.kind],n.link].join(' ')).toLowerCase();
+function hl(s){const q=nk(view.nq);const e=esc(s);if(!q)return e;
+  const words=[...new Set(q.split(' ').filter(Boolean))].map(w=>esc(w).replace(/[.*+?^${}()|[\]\\]/g,'\\$&'));
+  if(!words.length)return e;return e.replace(new RegExp('('+words.join('|')+')','gi'),'<mark>$1</mark>')}
 function renderNews(){
-  const all=S.news;
+  const qs=nk(view.nq).toLowerCase().split(' ').filter(Boolean);
+  const all=S.news.filter(n=>{if(!qs.length)return true;const tx=newsText(n);return qs.every(w=>tx.includes(w))});
   $('#nType').innerHTML=[['all','전체',all.length],['update','업데이트 소식',all.filter(n=>n.kind==='update').length],['game','게임 소식',all.filter(n=>n.kind==='game').length]]
     .map(([v,l,c])=>`<button class="chip" data-v="${v}" aria-pressed="${view.ntype===v}">${l}<b>${c}</b></button>`).join('');
-  const list=newsSorted().filter(n=>view.ntype==='all'||n.kind===view.ntype);
+  const list=newsSorted().filter(n=>all.includes(n)&&(view.ntype==='all'||n.kind===view.ntype));
   const el=$('#news');
-  if(!all.length){el.innerHTML=`<div class="empty"><strong>아직 올라온 소식이 없어요</strong>[+ 소식 쓰기]로 앱 업데이트나 아이카츠! 앙코르 게임 소식을 올려 보세요.<br>GitHub 사이트의 parts-data.json에 함께 담아 올리면 모두에게 보여요.</div>`;return}
+  if(qs.length&&!list.length){el.innerHTML=`<div class="empty"><strong>'${esc(view.nq.trim())}'에 맞는 소식이 없어요</strong>다른 낱말로 찾아보거나 분류를 [전체]로 바꿔 보세요.</div>`;return}
+  if(!S.news.length){el.innerHTML=`<div class="empty"><strong>아직 올라온 소식이 없어요</strong>[+ 소식 쓰기]로 앱 업데이트나 아이카츠! 앙코르 게임 소식을 올려 보세요.<br>GitHub 사이트의 parts-data.json에 함께 담아 올리면 모두에게 보여요.</div>`;return}
   if(!list.length){el.innerHTML=`<div class="empty"><strong>이 분류의 소식이 없어요</strong></div>`;return}
   el.innerHTML=list.map(n=>{const long=n.body.length>220||n.body.split('\n').length>6;
     return `<article class="news${n.pin?' pin':''}"><div class="news-h">${n.pin?'<span class="ntag pin">고정</span>':''}<span class="ntag ${n.kind}">${NKIND[n.kind]}</span><time datetime="${n.date}">${fmtDate(n.date)}</time></div>
-    <h3>${esc(n.title)}</h3>${n.body?`<p class="nb${long?' clamp':''}">${esc(n.body)}</p>`:''}
-    <div class="news-f">${long?`<button class="linkbtn" data-more>더 읽기</button>`:''}${n.link?`<a href="${esc(n.link)}" target="_blank" rel="noopener noreferrer">관련 링크 열기 ↗</a>`:''}<span class="sp"></span><button class="linkbtn" data-news="${esc(n.id)}">편집</button></div></article>`}).join('');
+    <h3>${hl(n.title)}</h3>${n.body?`<p class="nb${long&&!qs.length?' clamp':''}">${hl(n.body)}</p>`:''}
+    <div class="news-f">${long&&!qs.length?`<button class="linkbtn" data-more>더 읽기</button>`:''}${n.link?`<a href="${esc(n.link)}" target="_blank" rel="noopener noreferrer">관련 링크 열기 ↗</a>`:''}<span class="sp"></span><button class="linkbtn" data-news="${esc(n.id)}">편집</button></div></article>`}).join('');
 }
 function latestNewsT(){return S.news.reduce((m,n)=>Math.max(m,n.t||0),0)}
 function markSeen(){try{localStorage.setItem(NEWS_SEEN,String(latestNewsT()))}catch(e){}}
@@ -1360,6 +1369,7 @@ $('#fNews').addEventListener('submit',e=>{
 });
 $('#nCancel').onclick=()=>$('#dNews').close();
 $('#nDel').onclick=()=>{if(!confirm('이 소식을 삭제할까요?'))return;S.news=S.news.filter(x=>x.id!==editNews);save();$('#dNews').close();render();toast('삭제했어요')};
+$('#nq').addEventListener('input',e=>{view.nq=e.target.value;renderNews()});
 $('#nType').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;view.ntype=b.dataset.v;renderNews()});
 $('#news').addEventListener('click',e=>{
   const m=e.target.closest('[data-more]');if(m){const p=m.closest('.news').querySelector('.nb');const open=p.classList.toggle('clamp');m.textContent=open?'더 읽기':'접기';return}
