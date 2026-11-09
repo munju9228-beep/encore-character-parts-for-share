@@ -469,7 +469,7 @@ textarea.io{width:100%;min-height:110px;padding:10px;border-radius:12px;border:2
       <div class="btns"><button class="btn" id="resetStatus">보유·원해요 기록만 지우기</button><button class="btn danger" id="reset">전부 지우기</button></div>
     </div>
   </section>
-  <footer class="disc">아이카츠! 앙코르 파츠와 정보를 정리한 비영리·비공식 매체입니다.<br>이 매체는 공식 서비스와 무관하며 관련 이미지들의 권리는 반다이, 반다이 남코 등에 있습니다.</footer>
+  <footer class="disc"><span id="appVer" style="display:block;margin-bottom:6px;opacity:.75">화면 버전 2026.11.09</span>아이카츠! 앙코르 파츠와 정보를 정리한 비영리·비공식 매체입니다.<br>이 매체는 공식 서비스와 무관하며 관련 이미지들의 권리는 반다이, 반다이 남코 등에 있습니다.</footer>
 </div>
 
 <div class="fabrow" id="fabRow"><button class="fab2" id="quickBtn" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>빠른 체크</button><button class="fab2" id="fab2" aria-haspopup="dialog">더보기</button></div>
@@ -580,6 +580,7 @@ textarea.io{width:100%;min-height:110px;padding:10px;border-radius:12px;border:2
     <dl class="pv-info">
       <div><dt>탄</dt><dd id="vWave"></dd></div>
       <div><dt>획득 경로</dt><dd id="vRoute"></dd></div>
+      <div id="vSNameRow"><dt>스탬프 이름</dt><dd id="vSName"></dd></div>
       <div id="vNoteRow"><dt>메모</dt><dd id="vNote" style="white-space:pre-wrap"></dd></div>
     </dl>
     <div class="pv-act">
@@ -970,7 +971,7 @@ function fillView(){
   $('#vCat').textContent=p.cat;
   $('#vWave').innerHTML=p.wave?`<span class="wv">${esc(waveLabel(p.wave))}</span>`:'<span style="color:var(--ink-soft)">미입력</span>';
   $('#vRoute').innerHTML=routeHTML(p)||'<span style="color:var(--ink-soft)">미입력</span>';
-  $('#vNote').textContent=p.note||'';$('#vNoteRow').classList.toggle('hidden',!p.note);
+  $('#vSName').textContent=p.acq===STAMP?(p.sname||'아이카츠! 스탬프 (일반)'):'';$('#vSNameRow').classList.toggle('hidden',p.acq!==STAMP);$('#vNote').textContent=p.note||'';$('#vNoteRow').classList.toggle('hidden',!p.note);
   document.querySelectorAll('#vStatus button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.v===p.status));
   $('#vFav').setAttribute('aria-pressed',!!p.fav);
 }
@@ -1231,7 +1232,10 @@ async function pushNow(){
 async function applyRemote(m,force){
   if(!m||typeof m.state!=='string'||!m.state)return false;
   if(!force&&(m.rev===SYNC.rev||pushTimer||pushing))return false;
-  let inc;try{inc=normalize(JSON.parse(m.state))}catch(e){return false}
+  let inc,raw;try{raw=JSON.parse(m.state);inc=normalize(raw)}catch(e){return false}
+  // 예전 버전 화면(스탬프 이름 칸이 없는 버전)이 저장한 내용이 들어오면, 이 기기에 있던 스탬프 이름을 지키고 다시 올려요
+  let healed=0;const rawParts=new Map((raw.parts||[]).map(x=>[x&&x.id,x]));
+  inc.parts.forEach(p=>{const rp=rawParts.get(p.id);if(rp&&!('sname' in rp)){const old=S.parts.find(x=>x.id===p.id);if(old&&old.sname){p.sname=old.sname;healed++}}});
   const be=await getBackend();const code=SYNC.code;
   setSyncSt('pulling');
   const theme=S.theme;S=inc;S.theme=theme;reapplyProfile();saveLocal();applyTheme();render();
@@ -1241,7 +1245,7 @@ async function applyRemote(m,force){
     n++;if(need.length>3)setSyncSt('pulling',`사진 받는 중 ${n}/${need.length}`);if(n%8===0)render()}
   for(const id of [...IMG.keys()])if(!rimgs[id])await delImg(id,true);
   SYNC.remote={...rimgs};SYNC.rev=m.rev;SYNC.at=Date.now();SYNC.dirty=false;saveSync();
-  setSyncSt('idle');render();return true;
+  setSyncSt('idle');render();if(healed)schedulePush();return true;
 }
 function startWatch(){if(unwatch){try{unwatch()}catch(e){}unwatch=null}
   if(!SYNC.code||!BE)return;const code=SYNC.code;
@@ -1508,7 +1512,7 @@ async function doImport(text,merge=$('#imMerge').checked){
   if(merge){
     const key=p=>p.cat+'|'+dn(p);const have=new Map(S.parts.map(p=>[key(p),p]));let add=0;
     inc.parts.forEach(p=>{const img=p._img;delete p._img;const h=have.get(key(p));
-      if(h){if(p.status==='owned')h.status='owned';if(p.fav)h.fav=true;if(img&&!IMG.has(h.id))imgs.push([h.id,img])}
+      if(h){if(p.sname&&!h.sname)h.sname=p.sname;if(p.status==='owned')h.status='owned';if(p.fav)h.fav=true;if(img&&!IMG.has(h.id))imgs.push([h.id,img])}
       else{const id=uid();S.parts.push({...p,id});add++;if(img)imgs.push([id,img])}});
     inc.cats.forEach(c=>{if(!S.cats.includes(c))S.cats.push(c)});inc.acq.forEach(a=>{if(!S.acq.includes(a))S.acq.push(a)});
     inc.news.forEach(n=>{if(!S.news.some(x=>x.id===n.id))S.news.push(n)});
