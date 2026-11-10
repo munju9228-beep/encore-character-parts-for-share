@@ -1,7 +1,7 @@
 // 파일을 수정해 다시 배포할 때마다 버전 숫자를 올려 주세요.
 // (parts-data.json, sync-config.js만 바꿀 때는 올리지 않아도 돼요. 항상 최신 파일을 먼저 확인해요.)
-const CACHE = 'parts-note-v25';
-const ASSETS = ['./', './index.html', './manifest.webmanifest', './icons/icon.svg', './icons/icon-192.png', './icons/icon-512.png'];
+const CACHE = 'parts-note-v26';
+const ASSETS = ['./', './index.html', './manifest.webmanifest', './icons/icon.svg', './icons/icon-192.png', './icons/icon-512.png', './jszip.min.js'];
 const FONT_HOSTS = ['fonts.googleapis.com', 'fonts.gstatic.com'];
 
 self.addEventListener('install', e => {
@@ -22,6 +22,8 @@ self.addEventListener('fetch', e => {
   const same = url.origin === self.location.origin;
   // 동기화 저장소(Firebase) 같은 외부 요청은 건드리지 않아요. 항상 실시간으로 주고받아야 해요.
   if (!same && !FONT_HOSTS.includes(url.hostname)) return;
+  // 새 버전 확인용 요청(?fresh=)은 저장하지 않고 항상 인터넷에서 받아요
+  if (same && url.searchParams.has('fresh')) return;
   if (req.mode === 'navigate') { e.respondWith(networkFirst(req, './index.html')); return; }
   if (same && (url.pathname.endsWith('/parts-data.json') || url.pathname.endsWith('/sync-config.js'))) { e.respondWith(networkFirst(req)); return; }
   // 나머지(폰트, 아이콘)는 캐시 우선

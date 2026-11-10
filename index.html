@@ -199,6 +199,15 @@ nav.tabs button[aria-selected="true"]{background:var(--ink);color:var(--bg)}
 .pv-act .seg button{padding:11px 4px;font-family:"Jua",sans-serif;font-size:16px}
 .pv-act .seg button[data-v="owned"][aria-pressed="true"]{background:var(--gold);border-color:var(--gold);color:#3A2A00}
 .nb mark,.news h3 mark{background:color-mix(in srgb,var(--gold) 45%,transparent);color:inherit;border-radius:3px;padding:0 1px}
+.sheet.center{top:50%;bottom:auto;transform:translate(-50%,-50%);border-radius:24px;width:min(440px,calc(100% - 32px));max-height:82%}
+.pop h2{margin:8px 0 6px;font-size:22px;line-height:1.3;word-break:keep-all;overflow-wrap:anywhere}
+.pop .nb{max-height:42vh;overflow:auto}
+.pop .poplink{display:inline-block;margin-top:12px;color:var(--accent-ink);font-size:14px;text-decoration:none;border-bottom:1px solid currentColor}
+.pop .popn{font-size:12px;color:var(--ink-soft);text-align:center;margin-top:12px}
+.ntag.popt{background:var(--gold-soft);color:#7A5A00}
+.updbar{position:fixed;left:50%;top:calc(10px + env(safe-area-inset-top,0px));transform:translateX(-50%);z-index:9;display:flex;align-items:center;gap:8px;background:var(--ink);color:var(--bg);border-radius:99px;padding:7px 7px 7px 16px;font-size:14px;box-shadow:0 4px 14px rgba(40,20,60,.25);white-space:nowrap;max-width:calc(100% - 24px)}
+.updbar button{border:0;border-radius:99px;font-family:"Jua",sans-serif;font-size:14px;padding:6px 14px;background:var(--pink);color:var(--on-accent)}
+.updbar .x{background:transparent;color:var(--bg);padding:6px 8px;font-size:16px;opacity:.75}
 .news{background:var(--paper);border:2px solid var(--line);border-radius:18px;padding:14px 16px;margin-bottom:10px}
 .news.pin{border-color:var(--pink)}
 .news-h{display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-size:12px;color:var(--ink-soft)}
@@ -469,7 +478,7 @@ textarea.io{width:100%;min-height:110px;padding:10px;border-radius:12px;border:2
       <div class="btns"><button class="btn" id="resetStatus">보유·원해요 기록만 지우기</button><button class="btn danger" id="reset">전부 지우기</button></div>
     </div>
   </section>
-  <footer class="disc"><span id="appVer" style="display:block;margin-bottom:6px;opacity:.75">화면 버전 2026.11.09</span>아이카츠! 앙코르 파츠와 정보를 정리한 비영리·비공식 매체입니다.<br>이 매체는 공식 서비스와 무관하며 관련 이미지들의 권리는 반다이, 반다이 남코 등에 있습니다.</footer>
+  <footer class="disc"><span id="appVer" style="display:block;margin-bottom:6px;opacity:.75">화면 버전 2026.11.10</span>아이카츠! 앙코르 파츠와 정보를 정리한 비영리·비공식 매체입니다.<br>이 매체는 공식 서비스와 무관하며 관련 이미지들의 권리는 반다이, 반다이 남코 등에 있습니다.</footer>
 </div>
 
 <div class="fabrow" id="fabRow"><button class="fab2" id="quickBtn" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>빠른 체크</button><button class="fab2" id="fab2" aria-haspopup="dialog">더보기</button></div>
@@ -543,8 +552,8 @@ textarea.io{width:100%;min-height:110px;padding:10px;border-radius:12px;border:2
 <dialog id="dBulk" aria-labelledby="dBulkT">
   <form class="sheet" method="dialog" id="fBulk">
     <h2 id="dBulkT">이미지로 한 번에 등록</h2>
-    <label class="drop" id="drop" for="bFiles"><strong>이미지 여러 장 고르기</strong><span>또는 여기로 끌어다 놓기. 파일 이름이 이름 칸에 들어가요.</span></label>
-    <input type="file" id="bFiles" accept="image/*" multiple class="hidden">
+    <label class="drop" id="drop" for="bFiles"><strong>사진 여러 장 또는 zip 고르기</strong><span>또는 여기로 끌어다 놓기. 파일 이름이 이름 칸에 들어가요. zip은 안에 든 사진을 꺼내 넣어요.</span></label>
+    <input type="file" id="bFiles" accept="image/*,.zip,application/zip,application/x-zip-compressed" multiple class="hidden">
     <div class="field"><span class="lb">파일 이름을 넣을 칸</span>
       <div class="seg" id="bTarget"><button type="button" data-v="name">파츠 이름</button><button type="button" data-v="nameJa">일본어 이름</button></div>
     </div>
@@ -612,6 +621,17 @@ textarea.io{width:100%;min-height:110px;padding:10px;border-radius:12px;border:2
   </div>
 </dialog>
 
+<dialog id="dPop" aria-labelledby="popT">
+  <div class="sheet center pop">
+    <div class="news-h" id="popH"></div>
+    <h2 id="popT"></h2>
+    <p class="nb" id="popB"></p>
+    <a class="poplink hidden" id="popL" target="_blank" rel="noopener noreferrer">관련 링크 열기 ↗</a>
+    <p class="popn" id="popN"></p>
+    <div class="actions"><button type="button" class="btn" id="popNever">다음부터 안 보기</button><button type="button" class="btn primary" id="popClose">닫기</button></div>
+  </div>
+</dialog>
+
 <dialog id="dNews" aria-labelledby="dNewsT">
   <form class="sheet" method="dialog" id="fNews">
     <h2 id="dNewsT">소식 쓰기</h2>
@@ -625,6 +645,9 @@ textarea.io{width:100%;min-height:110px;padding:10px;border-radius:12px;border:2
     </div>
     <div class="field"><label for="nBody">내용</label><textarea id="nBody" rows="7" maxlength="3000" placeholder="소식 내용을 적어 주세요"></textarea></div>
     <div class="field"><label for="nLink">관련 링크 (선택)</label><input id="nLink" type="url" inputmode="url" maxlength="300" placeholder="https://"></div>
+    <div class="field"><label style="display:flex;align-items:center;gap:8px;font-size:14px;color:var(--ink)"><input type="checkbox" id="nPop" style="width:auto"> 앱을 열 때 팝업으로 보여 주기</label>
+      <div class="row2" id="nPopOpts" style="margin-top:6px"><div class="field" style="margin:0"><label for="nPopEnd">팝업 종료일 (선택)</label><input id="nPopEnd" type="date"></div><div class="field" style="margin:0"><span class="lb">앱에서 보일 모습</span><button type="button" class="btn" id="nPreview">미리보기</button></div></div>
+    </div>
     <div class="actions">
       <button type="button" class="btn danger" id="nDel">삭제</button>
       <button type="button" class="btn" id="nCancel">닫기</button>
@@ -648,6 +671,7 @@ textarea.io{width:100%;min-height:110px;padding:10px;border-radius:12px;border:2
 </dialog>
 
 <datalist id="snameList"></datalist>
+<div class="updbar hidden" id="updBar" role="status"><span>새 버전이 있어요</span><button id="updGo">새로 고침</button><button class="x" id="updX" aria-label="닫기">×</button></div>
 <div class="toast" id="toast" role="status"></div>
 
 <script>
@@ -737,7 +761,7 @@ function normalize(d){
   o.cats=Array.isArray(o.cats)&&o.cats.length?[...new Set(o.cats.map(nk).filter(Boolean))]:b.cats;
   o.acq=Array.isArray(o.acq)&&o.acq.length?o.acq.map(String):b.acq;
   o.parts=Array.isArray(o.parts)?o.parts.filter(p=>p&&(p.name||p.nameJa)).map(p=>({id:p.id||uid(),name:nk(p.name).slice(0,40),nameJa:nk(p.nameJa).slice(0,40),note:String(p.note||'').slice(0,500),cat:nk(p.cat)||'기타',acq:String(p.acq==='랭크업'?'랭크 달성':p.acq==='처음부터'?'기본':(p.acq||'기본')),wave:String(p.wave??''),step:String(p.step??'').replace(/\D/g,'').slice(0,4),rtype:RTYPES.includes(p.rtype)?p.rtype:'',sname:nk(p.sname).slice(0,40),status:p.status==='owned'?'owned':'none',fav:!!p.fav||p.status==='want',memo:String(p.memo||''),t:p.t||Date.now(),after:(typeof p.after==='string'&&p.after.length<=60)?p.after:null,mv:+p.mv||0,...((p.ord!==null&&p.ord!==undefined&&p.ord!==''&&Number.isFinite(+p.ord))?{ord:+p.ord}:{}),...(typeof p.imgData==='string'&&/^data:image\//.test(p.imgData)?{_img:p.imgData}:{})})):[];
-  o.news=Array.isArray(o.news)?o.news.filter(n=>n&&n.title).map(n=>({id:String(n.id||uid()),kind:NKIND[n.kind]?n.kind:'update',title:String(n.title).slice(0,60),date:/^\d{4}-\d{2}-\d{2}$/.test(n.date||'')?n.date:new Date(n.t||Date.now()).toISOString().slice(0,10),body:String(n.body||'').slice(0,3000),link:/^https?:\/\//i.test(n.link||'')?String(n.link).slice(0,300):'',pin:!!n.pin,t:+n.t||Date.now(),...(n.fromSeed?{fromSeed:true}:{})})):[];
+  o.news=Array.isArray(o.news)?o.news.filter(n=>n&&n.title).map(n=>({id:String(n.id||uid()),kind:NKIND[n.kind]?n.kind:'update',title:String(n.title).slice(0,60),date:/^\d{4}-\d{2}-\d{2}$/.test(n.date||'')?n.date:new Date(n.t||Date.now()).toISOString().slice(0,10),body:String(n.body||'').slice(0,3000),link:/^https?:\/\//i.test(n.link||'')?String(n.link).slice(0,300):'',pin:!!n.pin,popup:!!n.popup,popEnd:/^\d{4}-\d{2}-\d{2}$/.test(n.popEnd||'')?n.popEnd:'',t:+n.t||Date.now(),...(n.fromSeed?{fromSeed:true}:{})})):[];
   o.chars=Array.isArray(o.chars)?o.chars.filter(c=>c&&c.id&&c.name).map(c=>({id:String(c.id).slice(0,40),name:nk(c.name).slice(0,20)})):[];
   o.profiles=o.profiles&&typeof o.profiles==='object'&&!Array.isArray(o.profiles)?o.profiles:null;
   o.looks=Array.isArray(o.looks)?o.looks.filter(l=>l&&l.name).map(l=>({id:l.id||uid(),name:String(l.name),slots:l.slots&&typeof l.slots==='object'?l.slots:{},memo:String(l.memo||'')})):[];
@@ -1048,12 +1072,39 @@ $('#bStatus').addEventListener('click',e=>{const b=e.target.closest('button');if
 const matchOf=n=>{n=nk(n);return n?S.parts.find(p=>nk(p.name)===n||nk(p.nameJa)===n):null};
 function setBTarget(v){bTarget=v;document.querySelectorAll('#bTarget button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.v===v));document.querySelectorAll('#bRows input[type=text]').forEach(i=>{i.placeholder=v==='name'?'파츠 이름':'일본어 이름';i.lang=v==='name'?'ko':'ja'})}
 $('#bTarget').addEventListener('click',e=>{const b=e.target.closest('button');if(b)setBTarget(b.dataset.v)});
+/* zip 풀기: 압축 안의 사진만 꺼내요 (폴더·__MACOSX·숨김 파일·사진 아닌 파일은 건너뜀) */
+const JSZIP_SRC='./jszip.min.js';
+let jszipP=null;
+function loadJSZip(){if(window.JSZip)return Promise.resolve(window.JSZip);return jszipP||(jszipP=new Promise((res,rej)=>{const s=document.createElement('script');s.src=JSZIP_SRC;s.onload=()=>window.JSZip?res(window.JSZip):rej(new Error('no jszip'));s.onerror=()=>{jszipP=null;s.remove();rej(new Error('load'))};document.head.appendChild(s)}))}
+const isZip=f=>/\.zip$/i.test(f.name)||/zip/i.test(f.type||'');
+const IMG_RE=/\.(png|jpe?g|webp|gif|bmp|heic)$/i;
+const MIME={png:'image/png',jpg:'image/jpeg',jpeg:'image/jpeg',webp:'image/webp',gif:'image/gif',bmp:'image/bmp',heic:'image/heic'};
+// 윈도우 기본 압축은 한글 이름을 EUC-KR(CP949)로 저장해요. UTF-8로 안 읽히면 그걸로 읽어요
+function decodeZipName(bytes){try{return new TextDecoder('utf-8',{fatal:true}).decode(bytes)}catch(e){try{return new TextDecoder('euc-kr').decode(bytes)}catch(x){return new TextDecoder().decode(bytes)}}}
+async function expandFiles(files){
+  const out=[];let skipped=0,badZip=0;
+  for(const f of files){
+    if(!isZip(f)){out.push(f);continue}
+    let Z;try{$('#bCount').textContent='압축 푸는 도구를 준비하는 중…';Z=await loadJSZip()}catch(e){toast('압축 푸는 도구를 불러오지 못했어요. 인터넷 연결을 확인해 주세요');badZip++;continue}
+    $('#bCount').textContent=`${f.name} 푸는 중…`;
+    let z;try{z=await Z.loadAsync(f,{decodeFileName:decodeZipName})}catch(e){badZip++;continue}
+    const ents=[];
+    z.forEach((path,ent)=>{if(ent.dir)return;const base=path.split('/').pop();
+      if(/(^|\/)__MACOSX\//.test(path)||base.startsWith('.')||!IMG_RE.test(base)){skipped++;return}ents.push([base.normalize('NFC'),ent])});
+    ents.sort((a,b)=>a[0].localeCompare(b[0],'ko',{numeric:true}));
+    let i=0;for(const [base,ent] of ents){i++;if(ents.length>5&&i%5===0)$('#bCount').textContent=`${f.name} 푸는 중 ${i} / ${ents.length}`;
+      try{const blob=await ent.async('blob');const ext=base.split('.').pop().toLowerCase();out.push(new File([blob],base,{type:MIME[ext]||''}))}catch(e){skipped++}}
+  }
+  if(badZip)toast(`zip ${badZip}개는 열 수 없었어요`);else if(skipped)toast(`사진이 아닌 파일 ${skipped}개는 건너뛰었어요`);
+  return out;
+}
 async function addBulk(files){
+  files=[...files];if(files.some(isZip))files=await expandFiles(files);
   const list=[...files].filter(f=>f.type.startsWith('image/')||/\.(png|jpe?g|webp|gif|heic|bmp)$/i.test(f.name));
-  if(!list.length)return toast('이미지 파일만 올릴 수 있어요');
+  if(!list.length){renderBulk();return toast('사진 파일이나 사진이 든 zip만 올릴 수 있어요')}
   $('#bCount').textContent=`${list.length}장 줄이는 중…`;
-  let bad=0;
-  for(const f of list){try{const blob=await shrink(f);const name=nameFromFile(f);const m=matchOf(name);bulk.push({key:uid(),blob,url:URL.createObjectURL(blob),name,link:!!m});}catch(e){bad++}}
+  let bad=0,done=0;
+  for(const f of list){done++;if(list.length>5&&done%5===0)$('#bCount').textContent=`사진 정리 중 ${done} / ${list.length}`;try{const blob=await shrink(f);const name=nameFromFile(f);const m=matchOf(name);bulk.push({key:uid(),blob,url:URL.createObjectURL(blob),name,link:!!m});}catch(e){bad++}}
   renderBulk();if(bad)toast(`${bad}장은 열 수 없어서 뺐어요`);
 }
 function renderBulk(){
@@ -1338,6 +1389,39 @@ $('#syncClose').onclick=()=>$('#dSync').close();
 $('#syncPill').onclick=openSync;$('#syncOpen').onclick=openSync;
 window.addEventListener('online',()=>{if(SYNC.code){if(SYNC.dirty)schedulePush();setSyncSt('idle')}});
 
+/* 소식 팝업: 앱을 열 때 고른 소식을 하나씩 보여 줘요 */
+const POP_KEY='aikatsu-encore-popdis';
+const popHash=n=>{const s=[n.title,n.body,n.link,n.date].join('\u0001');let h=5381;for(let i=0;i<s.length;i++)h=((h<<5)+h+s.charCodeAt(i))|0;return (h>>>0).toString(36)};
+function popDismissed(){try{return JSON.parse(localStorage.getItem(POP_KEY)||'{}')||{}}catch(e){return {}}}
+let popQ=[],popI=0,popPreview=false;
+function popList(){const d=popDismissed(),td=today();return S.news.filter(n=>n.popup&&(!n.popEnd||n.popEnd>=td)&&d[n.id]!==popHash(n)).sort((a,b)=>(b.pin-a.pin)||b.date.localeCompare(a.date)||(b.t-a.t))}
+function showPop(){
+  const n=popQ[popI];if(!n){if($('#dPop').open)$('#dPop').close();return}
+  $('#popH').innerHTML=`<span class="ntag ${n.kind}">${NKIND[n.kind]}</span><time datetime="${n.date}">${fmtDate(n.date)}</time>`;
+  $('#popT').textContent=n.title;$('#popB').textContent=n.body||'';$('#popB').classList.toggle('hidden',!n.body);
+  const l=$('#popL');l.classList.toggle('hidden',!n.link);if(n.link)l.href=n.link;
+  $('#popN').textContent=popQ.length>1?`${popI+1} / ${popQ.length}`:(popPreview?'미리보기예요. 실제로는 앱을 열 때 이렇게 떠요':'');
+  $('#popNever').classList.toggle('hidden',popPreview);$('#popClose').textContent=popQ.length>1&&popI<popQ.length-1?'다음':'닫기';
+  if(!$('#dPop').open)$('#dPop').showModal();
+  $('#popClose').focus({preventScroll:true});
+}
+function startPops(){if(document.querySelector('dialog[open]'))return;popQ=popList();popI=0;popPreview=false;if(popQ.length)showPop()}
+$('#popClose').onclick=()=>{popI++;showPop()};
+$('#popNever').onclick=()=>{const n=popQ[popI];if(n){const d=popDismissed();d[n.id]=popHash(n);try{localStorage.setItem(POP_KEY,JSON.stringify(d))}catch(e){}}popI++;showPop()};
+$('#nPop').addEventListener('change',e=>$('#nPopOpts').classList.toggle('hidden',!e.target.checked));
+$('#nPreview').onclick=()=>{const title=$('#nTitle').value.trim()||'(제목 없음)';let link=$('#nLink').value.trim();if(link&&!/^https?:\/\//i.test(link))link='https://'+link;
+  popQ=[{kind:nKind,title,date:$('#nDate').value||today(),body:$('#nBody').value.trim(),link}];popI=0;popPreview=true;showPop()};
+
+/* 새 버전 알림 (앱에서만): 올라온 화면의 버전이 지금보다 새로우면 위에 알려 줘요 */
+const APP_VER='2026.11.10';
+async function checkUpdate(){
+  if(!SEED_URL||!navigator.onLine)return;
+  try{const r=await fetch('./index.html?fresh='+Date.now(),{cache:'no-store'});if(!r.ok)return;const tx=await r.text();
+    const m=tx.match(/const APP_VER='([^']+)'/);if(m&&m[1]>APP_VER)$('#updBar').classList.remove('hidden')}catch(e){}
+}
+$('#updGo').onclick=()=>{$('#updBar').classList.add('hidden');refreshApp()};
+$('#updX').onclick=()=>$('#updBar').classList.add('hidden');
+
 /* info: 소식 */
 let editNews=null,nKind='update';view.ntype='all';
 const fmtDate=d=>d?d.replace(/-/g,'.'):'';
@@ -1359,7 +1443,7 @@ function renderNews(){
   if(!S.news.length){el.innerHTML=`<div class="empty"><strong>아직 올라온 소식이 없어요</strong>[+ 소식 쓰기]로 앱 업데이트나 아이카츠! 앙코르 게임 소식을 올려 보세요.<br>GitHub 사이트의 parts-data.json에 함께 담아 올리면 모두에게 보여요.</div>`;return}
   if(!list.length){el.innerHTML=`<div class="empty"><strong>이 분류의 소식이 없어요</strong></div>`;return}
   el.innerHTML=list.map(n=>{const long=n.body.length>220||n.body.split('\n').length>6;
-    return `<article class="news${n.pin?' pin':''}"><div class="news-h">${n.pin?'<span class="ntag pin">고정</span>':''}<span class="ntag ${n.kind}">${NKIND[n.kind]}</span><time datetime="${n.date}">${fmtDate(n.date)}</time></div>
+    return `<article class="news${n.pin?' pin':''}"><div class="news-h">${n.pin?'<span class="ntag pin">고정</span>':''}${n.popup?`<span class="ntag popt">팝업${n.popEnd?' ~'+esc(n.popEnd.slice(5).replace('-','.')):''}</span>`:''}<span class="ntag ${n.kind}">${NKIND[n.kind]}</span><time datetime="${n.date}">${fmtDate(n.date)}</time></div>
     <h3>${hl(n.title)}</h3>${n.body?`<p class="nb${long&&!qs.length?' clamp':''}">${hl(n.body)}</p>`:''}
     <div class="news-f">${long&&!qs.length?`<button class="linkbtn" data-more>더 읽기</button>`:''}${n.link?`<a href="${esc(n.link)}" target="_blank" rel="noopener noreferrer">관련 링크 열기 ↗</a>`:''}<span class="sp"></span><button class="linkbtn" data-news="${esc(n.id)}">편집</button></div></article>`}).join('');
 }
@@ -1375,14 +1459,14 @@ function openNews(id){
   $('#dNewsT').textContent=n?'소식 편집':'소식 쓰기';
   setNKind(n?n.kind:(view.ntype==='game'?'game':'update'));
   $('#nTitle').value=n?n.title:'';$('#nBody').value=n?n.body:'';$('#nLink').value=n?n.link:'';$('#nPin').checked=!!(n&&n.pin);
-  $('#nDate').value=n?n.date:today();
+  $('#nDate').value=n?n.date:today();$('#nPop').checked=!!(n&&n.popup);$('#nPopEnd').value=n?n.popEnd:'';$('#nPopOpts').classList.toggle('hidden',!(n&&n.popup));
   $('#nDel').classList.toggle('hidden',!n);
   $('#dNews').showModal();setTimeout(()=>$('#nTitle').focus(),50);
 }
 $('#fNews').addEventListener('submit',e=>{
   e.preventDefault();const title=$('#nTitle').value.trim();if(!title){toast('제목을 적어 주세요');return $('#nTitle').focus()}
   let link=$('#nLink').value.trim();if(link&&!/^https?:\/\//i.test(link))link='https://'+link;
-  const data={kind:nKind,title,date:$('#nDate').value||today(),body:$('#nBody').value.trim(),link,pin:$('#nPin').checked,t:Date.now()};
+  const data={kind:nKind,title,date:$('#nDate').value||today(),body:$('#nBody').value.trim(),link,pin:$('#nPin').checked,popup:$('#nPop').checked,popEnd:$('#nPop').checked?($('#nPopEnd').value||''):'',t:Date.now()};
   const was=editNews;
   if(editNews)Object.assign(S.news.find(x=>x.id===editNews),data);else S.news.push({id:uid(),...data});
   save();markSeen();$('#dNews').close();render();toast(was?'소식을 고쳤어요':'소식을 올렸어요');
@@ -1553,7 +1637,7 @@ $('#dMore').addEventListener('click',async e=>{
 });
 $('#pasteCancel').onclick=()=>$('#dPaste').close();
 $('#fPaste').addEventListener('submit',async e=>{e.preventDefault();const t=$('#pasteIo').value.trim();if(!t)return toast('먼저 목록 코드를 붙여넣어 주세요');$('#dPaste').close();await doImport(t,importMode==='merge')});
-['#dPart','#dLook','#dBulk','#dMore','#dPaste','#dNews','#dView','#dSync','#dChar'].forEach(s=>$(s).addEventListener('click',e=>{if(e.target===e.currentTarget)e.currentTarget.close()}));
+['#dPart','#dLook','#dBulk','#dMore','#dPaste','#dNews','#dView','#dSync','#dChar','#dPop'].forEach(s=>$(s).addEventListener('click',e=>{if(e.target===e.currentTarget)e.currentTarget.close()}));
 reapplyProfile();applyTheme();render();
 const SEED_URL='./parts-data.json', SEED_KEY='aikatsu-encore-seed';
 function hashStr(s){let h=5381;for(let i=0;i<s.length;i++)h=((h<<5)+h+s.charCodeAt(i))|0;return (h>>>0).toString(36)+'-'+s.length}
@@ -1590,7 +1674,7 @@ async function applySeed(){
   try{localStorage.setItem(SEED_KEY,h)}catch(e){}
   applyTheme();render();if(msg)toast(msg);
 }
-(window.indexedDB?IDB.all().then(m=>{const ids=new Set(S.parts.map(p=>p.id));m.forEach((b,k)=>{if(ids.has(k))IMG.set(k,URL.createObjectURL(b));else IDB.del(k).catch(()=>{})});if(m.size)render()}).catch(()=>{}):Promise.resolve()).then(fixDupes).then(syncStart).then(applySeed);
+(window.indexedDB?IDB.all().then(m=>{const ids=new Set(S.parts.map(p=>p.id));m.forEach((b,k)=>{if(ids.has(k))IMG.set(k,URL.createObjectURL(b));else IDB.del(k).catch(()=>{})});if(m.size)render()}).catch(()=>{}):Promise.resolve()).then(fixDupes).then(syncStart).then(applySeed).then(()=>{if(SEED_URL){setTimeout(startPops,500);setTimeout(checkUpdate,4000);setInterval(checkUpdate,30*60*1000);document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')checkUpdate()})}});
 async function fixDupes(){
   const FLAG='aikatsu-encore-nfc-fix1';let done=false;try{done=!!localStorage.getItem(FLAG)}catch(e){}
   if(done)return;
