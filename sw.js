@@ -1,6 +1,6 @@
 // 파일을 수정해 다시 배포할 때마다 버전 숫자를 올려 주세요.
 // (parts-data.json, sync-config.js만 바꿀 때는 올리지 않아도 돼요. 항상 최신 파일을 먼저 확인해요.)
-const CACHE = 'parts-note-v28';
+const CACHE = 'parts-note-v29';
 const ASSETS = ['./', './index.html', './manifest.webmanifest', './icons/icon.svg', './icons/icon-192.png', './icons/icon-512.png', './jszip.min.js'];
 const FONT_HOSTS = ['fonts.googleapis.com', 'fonts.gstatic.com'];
 
@@ -26,6 +26,14 @@ self.addEventListener('fetch', e => {
   if (same && url.searchParams.has('fresh')) return;
   if (req.mode === 'navigate') { e.respondWith(networkFirst(req, './index.html')); return; }
   if (same && (url.pathname.endsWith('/parts-data.json') || url.pathname.endsWith('/sync-config.js'))) { e.respondWith(networkFirst(req)); return; }
+  // 공유 사진(photos/)은 저장해 둔 걸 바로 보여 주고, 뒤에서 새 사진을 받아 다음부터 반영해요 (같은 이름으로 바꿔 올려도 갱신)
+  if (same && url.pathname.includes('/photos/')) {
+    e.respondWith(caches.open(CACHE).then(ca => ca.match(req).then(hit => {
+      const net = fetch(req).then(r => { if (r.ok) ca.put(req, r.clone()); else if (r.status === 404) ca.delete(req); return r; }).catch(() => hit);
+      return hit || net;
+    })));
+    return;
+  }
   // 나머지(폰트, 아이콘)는 캐시 우선
   e.respondWith(caches.match(req).then(hit => hit || fetch(req).then(r => {
     if (r.ok || r.type === 'opaque') { const c = r.clone(); caches.open(CACHE).then(ca => ca.put(req, c)); }

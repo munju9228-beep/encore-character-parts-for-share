@@ -478,7 +478,7 @@ textarea.io{width:100%;min-height:110px;padding:10px;border-radius:12px;border:2
       <div class="btns"><button class="btn" id="resetStatus">보유·원해요 기록만 지우기</button><button class="btn danger" id="reset">전부 지우기</button></div>
     </div>
   </section>
-  <footer class="disc"><span id="appVer" style="display:block;margin-bottom:6px;opacity:.75">화면 버전 2026.11.20-2</span>아이카츠! 앙코르 파츠와 정보를 정리한 비영리·비공식 매체입니다.<br>이 매체는 공식 서비스와 무관하며 관련 이미지들의 권리는 반다이, 반다이 남코 등에 있습니다.</footer>
+  <footer class="disc"><span id="appVer" style="display:block;margin-bottom:6px;opacity:.75">화면 버전 2026.11.20-3</span>아이카츠! 앙코르 파츠와 정보를 정리한 비영리·비공식 매체입니다.<br>이 매체는 공식 서비스와 무관하며 관련 이미지들의 권리는 반다이, 반다이 남코 등에 있습니다.</footer>
 </div>
 
 <div class="fabrow" id="fabRow"><button class="fab2" id="quickBtn" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>빠른 체크</button><button class="fab2" id="fab2" aria-haspopup="dialog">더보기</button></div>
@@ -687,7 +687,15 @@ const dn=p=>p.name||p.nameJa||'이름 없는 파츠';
 const STEP_LB={'스탬프':'스탬프','랭크 달성':'랭크'};
 const STAMP='스탬프', EVENT='이벤트';
 // 사진: 이 기기에 넣은 사진이 먼저, 없으면 (앱에서) GitHub photos 폴더의 공유 사진
-const imgOf=p=>IMG.get(p.id)||(IS_APP&&p.img?`${p.img}?v=${encodeURIComponent(p.imgv||'')}`:'');
+// 앱에서는 GitHub photos 폴더에서 '파츠 이름.webp' → '일본어 이름.webp' 순서로 찾아요 (없는 파일은 기억해 두고 다시 찾지 않아요)
+const MISS=new Set();
+const photoCands=p=>{const c=[];if(p.img)c.push(`${p.img}?v=${encodeURIComponent(p.imgv||'')}`);
+  [p.name,p.nameJa].forEach(n=>{n=nk(n);if(n)c.push('photos/'+encodeURIComponent(n)+'.webp')});return c};
+const imgOf=p=>IMG.get(p.id)||(IS_APP?(photoCands(p).find(u=>!MISS.has(u))||''):'');
+window.imgMiss=el=>{MISS.add(el.getAttribute('src'));const p=S.parts.find(x=>x.id===el.dataset.pid);const n=p&&imgOf(p);
+  if(n&&n!==el.getAttribute('src')){el.src=n;return}
+  const box=el.parentElement;if(!box)return;
+  if(box.classList.contains('pic')){box.classList.add('none');box.innerHTML=CAM+'사진 없음'}else if(box.tagName==='LI')el.remove();else box.innerHTML=CAM};
 const IS_APP=true;
 // 스탬프 이름이 비어 있거나 '아이카츠! 스탬프'면 일반 스탬프, 다른 이름이면 이벤트 스탬프
 const basicStamp=s=>{const k=String(s||'').normalize('NFC').replace(/[\s!！]/g,'');return !k||k==='아이카츠스탬프'};
@@ -900,7 +908,7 @@ const CAM='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-wid
 function tileHTML(p){
   const w=waveLabel(p.wave);
   const route=routeHTML(p);
-  const pic=imgOf(p)?`<span class="pic"><img src="${esc(imgOf(p))}" alt="" loading="lazy"></span>`:`<span class="pic none">${CAM}사진 없음</span>`;
+  const pic=imgOf(p)?`<span class="pic"><img src="${esc(imgOf(p))}" data-pid="${esc(p.id)}" onerror="imgMiss(this)" alt="" loading="lazy"></span>`:`<span class="pic none">${CAM}사진 없음</span>`;
   const ja=p.name&&p.nameJa?`<div class="ja" lang="ja">${esc(p.nameJa)}</div>`:'';
   return `<div class="tile ${p.status}" data-id="${p.id}">
     <button class="open" aria-label="${esc(dn(p))} 정보 보기"></button>
@@ -928,7 +936,7 @@ function renderLooks(){
   el.innerHTML=head+S.looks.map(l=>{
     const items=S.cats.filter(c=>l.slots[c]).map(c=>{const p=S.parts.find(x=>x.id===l.slots[c]);
       if(!p)return `<li><em>${esc(c)}</em><span class="miss">삭제된 파츠</span></li>`;
-      return `<li>${imgOf(p)?`<img src="${esc(imgOf(p))}" alt="">`:''}<em>${esc(c)}</em>${esc(dn(p))}${p.status!=='owned'?' <span class="miss">(미보유)</span>':''}</li>`}).join('');
+      return `<li>${imgOf(p)?`<img src="${esc(imgOf(p))}" data-pid="${esc(p.id)}" onerror="imgMiss(this)" alt="">`:''}<em>${esc(c)}</em>${esc(dn(p))}${p.status!=='owned'?' <span class="miss">(미보유)</span>':''}</li>`}).join('');
     return `<article class="look"><div class="look-h"><h3>${esc(l.name)}</h3><button class="btn" data-look="${l.id}">편집</button></div>${l.memo?`<p style="margin:6px 0 0;color:var(--ink-soft);font-size:14px">${esc(l.memo)}</p>`:''}<ul>${items||'<li><em>선택한 파츠 없음</em></li>'}</ul></article>`}).join('');
 }
 
@@ -981,7 +989,7 @@ function renderTrack(){
       <ol class="steps">${ps.map(p=>`<li class="${p.status}">
         <button class="open" aria-label="${esc(dn(p))} 정보 보기" data-open="${p.id}"></button>
         <span class="no" aria-hidden="true">${isStep&&p.step?esc(p.step):'★'}</span>
-        <span class="tp">${imgOf(p)?`<img src="${esc(imgOf(p))}" alt="" loading="lazy">`:CAM}</span>
+        <span class="tp">${imgOf(p)?`<img src="${esc(imgOf(p))}" data-pid="${esc(p.id)}" onerror="imgMiss(this)" alt="" loading="lazy">`:CAM}</span>
         <span class="tn">${esc(dn(p))}${p.fav?`<span class="hs" role="img" aria-label="원해요">${HEART}</span>`:''}${p.name&&p.nameJa?` <small lang="ja">${esc(p.nameJa)}</small>`:''}<small>${esc(p.cat)}${p.memo?' / '+esc(p.memo):''}</small></span>
         <button class="stamp" data-stamp="${p.id}" aria-label="상태: ${STATUS[p.status]}. 눌러서 바꾸기">${STATUS[p.status]}</button>
       </li>`).join('')}</ol></section>`}).join('')||`<div class="empty"><strong>이 탄에는 파츠가 없어요</strong></div>`;
@@ -1014,7 +1022,7 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'&&quick&&!document.qu
 let viewId=null,returnTo=null;
 function fillView(){
   const p=S.parts.find(x=>x.id===viewId);if(!p){if($('#dView').open)$('#dView').close();return}
-  const pic=$('#vPic');pic.className='pv-pic'+(p.status==='owned'?' owned':'');pic.innerHTML=imgOf(p)?`<img src="${esc(imgOf(p))}" alt="${esc(dn(p))} 사진">`:CAM;
+  const pic=$('#vPic');pic.className='pv-pic'+(p.status==='owned'?' owned':'');pic.innerHTML=imgOf(p)?`<img src="${esc(imgOf(p))}" data-pid="${esc(p.id)}" onerror="imgMiss(this)" alt="${esc(dn(p))} 사진">`:CAM;
   $('#vName').textContent=p.name||p.nameJa||'이름 없는 파츠';$('#vName').lang=p.name?'ko':'ja';
   const ja=p.name&&p.nameJa?p.nameJa:'';$('#vJa').textContent=ja;$('#vJa').classList.toggle('hidden',!ja);
   $('#vCat').textContent=p.cat;
@@ -1439,7 +1447,7 @@ $('#nPreview').onclick=()=>{const title=$('#nTitle').value.trim()||'(제목 없�
   popQ=[{kind:nKind,title,date:$('#nDate').value||today(),body:$('#nBody').value.trim(),link}];popI=0;popPreview=true;showPop()};
 
 /* 새 버전 알림 (앱에서만): 올라온 화면의 버전이 지금보다 새로우면 위에 알려 줘요 */
-const APP_VER='2026.11.20-2';
+const APP_VER='2026.11.20-3';
 async function checkUpdate(){
   if(!SEED_URL||!navigator.onLine)return;
   try{const r=await fetch('./index.html?fresh='+Date.now(),{cache:'no-store'});if(!r.ok)return;const tx=await r.text();
