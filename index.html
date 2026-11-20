@@ -129,7 +129,7 @@ nav.tabs button[aria-selected="true"]{background:var(--ink);color:var(--bg)}
 .ty-ev{background:var(--pink);color:var(--on-accent)}
 .trk-h h3{flex-wrap:wrap}
 .trk-h h3 small{flex-basis:100%;font-family:"Gowun Dodum",sans-serif;font-size:13px;color:var(--ink-soft);margin-top:2px}
-#pSName,#bSName{grid-column:1/-1}
+#pSName,#bSName,#pEName,#bEName{grid-column:1/-1}
 .ty-큐트{background:#FF5C9E}.ty-쿨{background:#2F8FE8}.ty-섹시{background:#8B4FD8}.ty-팝{background:#F29A00}
 .brow .bstep select{width:auto;padding:5px 6px}
 .brow .bstep input{width:56px;padding:6px 8px;border-radius:10px;border:2px solid var(--line);background:var(--paper)}
@@ -478,7 +478,7 @@ textarea.io{width:100%;min-height:110px;padding:10px;border-radius:12px;border:2
       <div class="btns"><button class="btn" id="resetStatus">보유·원해요 기록만 지우기</button><button class="btn danger" id="reset">전부 지우기</button></div>
     </div>
   </section>
-  <footer class="disc"><span id="appVer" style="display:block;margin-bottom:6px;opacity:.75">화면 버전 2026.11.10</span>아이카츠! 앙코르 파츠와 정보를 정리한 비영리·비공식 매체입니다.<br>이 매체는 공식 서비스와 무관하며 관련 이미지들의 권리는 반다이, 반다이 남코 등에 있습니다.</footer>
+  <footer class="disc"><span id="appVer" style="display:block;margin-bottom:6px;opacity:.75">화면 버전 2026.11.20-2</span>아이카츠! 앙코르 파츠와 정보를 정리한 비영리·비공식 매체입니다.<br>이 매체는 공식 서비스와 무관하며 관련 이미지들의 권리는 반다이, 반다이 남코 등에 있습니다.</footer>
 </div>
 
 <div class="fabrow" id="fabRow"><button class="fab2" id="quickBtn" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>빠른 체크</button><button class="fab2" id="fab2" aria-haspopup="dialog">더보기</button></div>
@@ -501,7 +501,7 @@ textarea.io{width:100%;min-height:110px;padding:10px;border-radius:12px;border:2
       <div class="field"><label for="pCat">카테고리</label><select id="pCat"></select></div>
     </div>
     <div class="field"><label for="pAcq">획득 경로</label>
-      <div class="route" id="pRoute"><select id="pAcq" aria-label="획득 경로 종류"></select><select id="pRType" class="rtype" aria-label="랭크 타입"></select><div class="step" id="pStepBox"><input id="pStep" inputmode="numeric" maxlength="4" placeholder="예: 5" aria-label="몇 번째"><span id="pStepLb">번째</span></div><input id="pSName" list="snameList" maxlength="40" placeholder="스탬프 이름 (비우면 아이카츠! 스탬프)" aria-label="스탬프 이름"><input class="detail" id="pMemo" maxlength="100" placeholder="상세 (선택)" aria-label="획득 경로 상세"></div>
+      <div class="route" id="pRoute"><select id="pAcq" aria-label="획득 경로 종류"></select><select id="pRType" class="rtype" aria-label="랭크 타입"></select><div class="step" id="pStepBox"><input id="pStep" inputmode="numeric" maxlength="4" placeholder="예: 5" aria-label="몇 번째"><span id="pStepLb">번째</span></div><input id="pEName" list="enameList" maxlength="40" placeholder="이벤트 이름 (예: 할로윈 이벤트)" aria-label="이벤트 이름"><input id="pSName" list="snameList" maxlength="40" placeholder="스탬프 이름 (비우면 아이카츠! 스탬프)" aria-label="스탬프 이름"><input class="detail" id="pMemo" maxlength="100" placeholder="상세 (선택)" aria-label="획득 경로 상세"></div>
     </div>
     <div class="field"><span class="lb">상태</span>
       <div class="seg" id="pStatus"><button type="button" data-v="owned">보유</button><button type="button" data-v="none">미보유</button></div>
@@ -564,7 +564,7 @@ textarea.io{width:100%;min-height:110px;padding:10px;border-radius:12px;border:2
         <div class="field"><label for="bCat">카테고리 (기본값)</label><select id="bCat"></select></div>
       </div>
       <div class="field"><label for="bAcq">획득 경로</label>
-        <div class="route" id="bRoute"><select id="bAcq" aria-label="획득 경로 종류"></select><select id="bRType" class="rtype" aria-label="랭크 타입 (기본값)"></select><input id="bSName" list="snameList" maxlength="40" placeholder="스탬프 이름 (비우면 아이카츠! 스탬프)" aria-label="스탬프 이름"><input id="bMemo" maxlength="100" placeholder="상세 (선택)" aria-label="획득 경로 상세"></div>
+        <div class="route" id="bRoute"><select id="bAcq" aria-label="획득 경로 종류"></select><select id="bRType" class="rtype" aria-label="랭크 타입 (기본값)"></select><input id="bEName" list="enameList" maxlength="40" placeholder="이벤트 이름 (예: 할로윈 이벤트)" aria-label="이벤트 이름"><input id="bSName" list="snameList" maxlength="40" placeholder="스탬프 이름 (비우면 아이카츠! 스탬프)" aria-label="스탬프 이름"><input id="bMemo" maxlength="100" placeholder="상세 (선택)" aria-label="획득 경로 상세"></div>
         <p class="bcount" id="bStepHint" style="margin:6px 0 0">몇 번째인지는 아래 사진 목록에서 한 장씩 적을 수 있어요.<span id="bRTypeHint"> 타입(큐트·쿨·섹시·팝)도 사진마다 바꿀 수 있어요.</span></p>
       </div>
       <div class="field"><span class="lb">상태</span>
@@ -589,7 +589,7 @@ textarea.io{width:100%;min-height:110px;padding:10px;border-radius:12px;border:2
     <dl class="pv-info">
       <div><dt>탄</dt><dd id="vWave"></dd></div>
       <div><dt>획득 경로</dt><dd id="vRoute"></dd></div>
-      <div id="vSNameRow"><dt>스탬프 이름</dt><dd id="vSName"></dd></div>
+      <div id="vSNameRow"><dt id="vSNameLb">스탬프 이름</dt><dd id="vSName"></dd></div>
       <div id="vNoteRow"><dt>메모</dt><dd id="vNote" style="white-space:pre-wrap"></dd></div>
     </dl>
     <div class="pv-act">
@@ -670,7 +670,7 @@ textarea.io{width:100%;min-height:110px;padding:10px;border-radius:12px;border:2
   </form>
 </dialog>
 
-<datalist id="snameList"></datalist>
+<datalist id="snameList"></datalist><datalist id="enameList"></datalist>
 <div class="updbar hidden" id="updBar" role="status"><span>새 버전이 있어요</span><button id="updGo">새로 고침</button><button class="x" id="updX" aria-label="닫기">×</button></div>
 <div class="toast" id="toast" role="status"></div>
 
@@ -685,7 +685,10 @@ const DEFAULT_ACQ=['기본','이벤트','스탬프','랭크 달성'];
 const OLD_ACQ=['처음부터','파츠 뽑기','랭크업','월간 배포','미션 클리어','기타'];
 const dn=p=>p.name||p.nameJa||'이름 없는 파츠';
 const STEP_LB={'스탬프':'스탬프','랭크 달성':'랭크'};
-const STAMP='스탬프';
+const STAMP='스탬프', EVENT='이벤트';
+// 사진: 이 기기에 넣은 사진이 먼저, 없으면 (앱에서) GitHub photos 폴더의 공유 사진
+const imgOf=p=>IMG.get(p.id)||(IS_APP&&p.img?`${p.img}?v=${encodeURIComponent(p.imgv||'')}`:'');
+const IS_APP=true;
 // 스탬프 이름이 비어 있거나 '아이카츠! 스탬프'면 일반 스탬프, 다른 이름이면 이벤트 스탬프
 const basicStamp=s=>{const k=String(s||'').normalize('NFC').replace(/[\s!！]/g,'');return !k||k==='아이카츠스탬프'};
 const isEvSt=p=>p.acq===STAMP&&!basicStamp(p.sname);
@@ -760,7 +763,7 @@ function normalize(d){
   if(!/^#[0-9a-f]{6}$/i.test(o.accent||''))o.accent=b.accent;
   o.cats=Array.isArray(o.cats)&&o.cats.length?[...new Set(o.cats.map(nk).filter(Boolean))]:b.cats;
   o.acq=Array.isArray(o.acq)&&o.acq.length?o.acq.map(String):b.acq;
-  o.parts=Array.isArray(o.parts)?o.parts.filter(p=>p&&(p.name||p.nameJa)).map(p=>({id:p.id||uid(),name:nk(p.name).slice(0,40),nameJa:nk(p.nameJa).slice(0,40),note:String(p.note||'').slice(0,500),cat:nk(p.cat)||'기타',acq:String(p.acq==='랭크업'?'랭크 달성':p.acq==='처음부터'?'기본':(p.acq||'기본')),wave:String(p.wave??''),step:String(p.step??'').replace(/\D/g,'').slice(0,4),rtype:RTYPES.includes(p.rtype)?p.rtype:'',sname:nk(p.sname).slice(0,40),status:p.status==='owned'?'owned':'none',fav:!!p.fav||p.status==='want',memo:String(p.memo||''),t:p.t||Date.now(),after:(typeof p.after==='string'&&p.after.length<=60)?p.after:null,mv:+p.mv||0,...((p.ord!==null&&p.ord!==undefined&&p.ord!==''&&Number.isFinite(+p.ord))?{ord:+p.ord}:{}),...(typeof p.imgData==='string'&&/^data:image\//.test(p.imgData)?{_img:p.imgData}:{})})):[];
+  o.parts=Array.isArray(o.parts)?o.parts.filter(p=>p&&(p.name||p.nameJa)).map(p=>({id:p.id||uid(),name:nk(p.name).slice(0,40),nameJa:nk(p.nameJa).slice(0,40),note:String(p.note||'').slice(0,500),cat:nk(p.cat)||'기타',acq:String(p.acq==='랭크업'?'랭크 달성':p.acq==='처음부터'?'기본':(p.acq||'기본')),wave:String(p.wave??''),step:String(p.step??'').replace(/\D/g,'').slice(0,4),rtype:RTYPES.includes(p.rtype)?p.rtype:'',sname:nk(p.sname).slice(0,40),ename:nk(p.ename).slice(0,40),img:/^photos\/[A-Za-z0-9_-]{1,60}\.webp$/.test(p.img||'')?p.img:'',imgv:String(p.imgv||'').replace(/[^A-Za-z0-9]/g,'').slice(0,24),status:p.status==='owned'?'owned':'none',fav:!!p.fav||p.status==='want',memo:String(p.memo||''),t:p.t||Date.now(),after:(typeof p.after==='string'&&p.after.length<=60)?p.after:null,mv:+p.mv||0,...((p.ord!==null&&p.ord!==undefined&&p.ord!==''&&Number.isFinite(+p.ord))?{ord:+p.ord}:{}),...(typeof p.imgData==='string'&&/^data:image\//.test(p.imgData)?{_img:p.imgData}:{})})):[];
   o.news=Array.isArray(o.news)?o.news.filter(n=>n&&n.title).map(n=>({id:String(n.id||uid()),kind:NKIND[n.kind]?n.kind:'update',title:String(n.title).slice(0,60),date:/^\d{4}-\d{2}-\d{2}$/.test(n.date||'')?n.date:new Date(n.t||Date.now()).toISOString().slice(0,10),body:String(n.body||'').slice(0,3000),link:/^https?:\/\//i.test(n.link||'')?String(n.link).slice(0,300):'',pin:!!n.pin,popup:!!n.popup,popEnd:/^\d{4}-\d{2}-\d{2}$/.test(n.popEnd||'')?n.popEnd:'',t:+n.t||Date.now(),...(n.fromSeed?{fromSeed:true}:{})})):[];
   o.chars=Array.isArray(o.chars)?o.chars.filter(c=>c&&c.id&&c.name).map(c=>({id:String(c.id).slice(0,40),name:nk(c.name).slice(0,20)})):[];
   o.profiles=o.profiles&&typeof o.profiles==='object'&&!Array.isArray(o.profiles)?o.profiles:null;
@@ -831,16 +834,38 @@ function renderFilters(){
 const waveLabel=w=>w?(/^\d+$/.test(w)?w+'탄':w):'';
 const waveNum=w=>/^\d+$/.test(w)?+w:(w?9998:9999);
 const waves=()=>[...new Set(S.parts.map(p=>p.wave))].sort((a,b)=>waveNum(a)-waveNum(b)||a.localeCompare(b));
-const routeLabel=p=>{if(!hasStep(p.acq))return p.acq;if(isEvSt(p))return p.step?`${stCore(p.sname)} ${p.step}번째 스탬프`:`${stCore(p.sname)} 스탬프`;const rt=p.acq===RANK&&p.rtype?p.rtype+' ':'';return p.step?`${rt}${p.step}번째 ${STEP_LB[p.acq]}`:(rt?rt+'랭크':p.acq)};
+const routeLabel=p=>{if(p.acq===EVENT)return p.ename?`${p.ename}`:EVENT;if(!hasStep(p.acq))return p.acq;if(isEvSt(p))return p.step?`${stCore(p.sname)} ${p.step}번째 스탬프`:`${stCore(p.sname)} 스탬프`;const rt=p.acq===RANK&&p.rtype?p.rtype+' ':'';return p.step?`${rt}${p.step}번째 ${STEP_LB[p.acq]}`:(rt?rt+'랭크':p.acq)};
 const routeHTML=p=>{const tag=(isEvSt(p)?'<span class="ty ty-ev">이벤트</span>':'')+(p.rtype?`<span class="ty ty-${p.rtype}">${p.rtype}</span>`:'');const txt=p.acq===RANK&&p.rtype?routeLabel(p).slice(p.rtype.length+1):routeLabel(p);return tag+esc(txt)+(p.memo?' / '+esc(p.memo):'')};
 const rtIdx=p=>{const i=RTYPES.indexOf(p.rtype);return i<0?9:i};
 const acqIdx=a=>{const i=S.acq.indexOf(a);return i<0?999:i};
 const stepNum=p=>p.step?+p.step:1e6;
 // 이벤트 스탬프끼리는 먼저 등록한 스탬프부터 (할로윈을 먼저 넣었으면 할로윈이 앞)
 let evCache=null;
-function evRank(name){if(!evCache){evCache=new Map();S.parts.forEach(p=>{if(isEvSt(p)){const k=nk(p.sname),v=evCache.get(k);if(v===undefined||(p.t||0)<v)evCache.set(k,p.t||0)}})}return evCache.get(nk(name))??0}
-const stGrp=(a,b)=>(isEvSt(a)-isEvSt(b))||(isEvSt(a)&&isEvSt(b)?(evRank(a.sname)-evRank(b.sname))||nk(a.sname).localeCompare(nk(b.sname),'ko'):0);
-const byEarliest=(a,b)=>waveNum(a.wave)-waveNum(b.wave)||acqIdx(a.acq)-acqIdx(b.acq)||stGrp(a,b)||rtIdx(a)-rtIdx(b)||stepNum(a)-stepNum(b)||(a.t||0)-(b.t||0);
+// 같은 경로 안에서 이름별 묶음(이벤트 스탬프, 이벤트 이름)은 먼저 등록한 것부터
+const grpKey=p=>isEvSt(p)?'s:'+nk(p.sname):(p.acq===EVENT&&p.ename)?'e:'+nk(p.ename):'';
+function evRank(key){if(!evCache){evCache=new Map();S.parts.forEach(p=>{const k=grpKey(p);if(k){const v=evCache.get(k);if(v===undefined||(p.t||0)<v)evCache.set(k,p.t||0)}})}return evCache.get(key)??0}
+const stGrp=(a,b)=>{const ka=grpKey(a),kb=grpKey(b);return (!!ka-!!kb)||(ka&&kb?(evRank(ka)-evRank(kb))||ka.localeCompare(kb,'ko'):0)};
+// 조건으로 정렬 (몇 번째가 없는 파츠끼리): 앙코르 라이브 곡 순서 → 별 개수, 그다음 pt 작은 것부터
+const SONGS=['AIKATSU X AIKATSU','Du-DU-WaDOI!!','SHINGLINE*'];
+const songKey=s=>String(s||'').normalize('NFKC').toLowerCase().replace(/×/g,'x').replace(/[^a-z0-9가-힣]/g,'');
+const SONG_K=SONGS.map(songKey);
+function condKey(p){
+  const txt=((p.ename||'')+' '+(p.memo||'')).normalize('NFKC');const k=songKey(txt);
+  let song=-1;SONG_K.forEach((s,i)=>{if(song<0&&k.includes(s))song=i});
+  const pm=txt.match(/(\d[\d,]*)\s*(?:pt|포인트|p(?![a-z]))/i);
+  let star=null;const sm=txt.match(/별\s*(\d+)/)||txt.match(/[★☆]\s*(\d+)/)||txt.match(/(\d+)\s*[★☆]/);
+  if(sm)star=+sm[1];else{const c=(txt.match(/★/g)||[]).length;if(c)star=c}
+  return {song,pt:pm?+pm[1].replace(/,/g,''):null,star};
+}
+function condCmp(a,b){
+  if(a.step||b.step)return 0;
+  const x=condKey(a),y=condKey(b),kx=x.song>=0?0:x.pt!==null?1:2,ky=y.song>=0?0:y.pt!==null?1:2;
+  if(kx!==ky)return kx-ky;
+  if(kx===0)return (x.song-y.song)||((x.star??99)-(y.star??99));
+  if(kx===1)return x.pt-y.pt;
+  return 0;
+}
+const byEarliest=(a,b)=>waveNum(a.wave)-waveNum(b.wave)||acqIdx(a.acq)-acqIdx(b.acq)||stGrp(a,b)||rtIdx(a)-rtIdx(b)||stepNum(a)-stepNum(b)||condCmp(a,b)||(a.t||0)-(b.t||0);
 const autoCat=(c,ps)=>c===FACE?ps.slice().sort((a,b)=>rtIdx(a)-rtIdx(b)||byEarliest(a,b)):ps.slice().sort(byEarliest);
 // 기본은 얻는 순서. 내가 옮긴 파츠(after = 바로 앞 파츠 id, '^' = 맨 앞)만 그 자리에 끼워 넣어요.
 function catOrder(c){
@@ -875,7 +900,7 @@ const CAM='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-wid
 function tileHTML(p){
   const w=waveLabel(p.wave);
   const route=routeHTML(p);
-  const pic=IMG.has(p.id)?`<span class="pic"><img src="${IMG.get(p.id)}" alt="" loading="lazy"></span>`:`<span class="pic none">${CAM}사진 없음</span>`;
+  const pic=imgOf(p)?`<span class="pic"><img src="${esc(imgOf(p))}" alt="" loading="lazy"></span>`:`<span class="pic none">${CAM}사진 없음</span>`;
   const ja=p.name&&p.nameJa?`<div class="ja" lang="ja">${esc(p.nameJa)}</div>`:'';
   return `<div class="tile ${p.status}" data-id="${p.id}">
     <button class="open" aria-label="${esc(dn(p))} 정보 보기"></button>
@@ -885,7 +910,7 @@ function tileHTML(p){
 
 function renderList(){
   const q=nk(view.q).toLowerCase();
-  let ps=S.parts.filter(p=>(view.status==='all'||(view.status==='fav'?p.fav:p.status===view.status))&&(view.cat==='all'||p.cat===view.cat)&&(view.acq==='all'||p.acq===view.acq)&&(view.wave==='all'||p.wave===view.wave)&&(!q||(p.name+' '+p.nameJa+' '+p.note+' '+routeLabel(p)+' '+p.rtype+' '+p.sname+' '+p.memo+' '+waveLabel(p.wave)).normalize('NFC').toLowerCase().includes(q)));
+  let ps=S.parts.filter(p=>(view.status==='all'||(view.status==='fav'?p.fav:p.status===view.status))&&(view.cat==='all'||p.cat===view.cat)&&(view.acq==='all'||p.acq===view.acq)&&(view.wave==='all'||p.wave===view.wave)&&(!q||(p.name+' '+p.nameJa+' '+p.note+' '+routeLabel(p)+' '+p.rtype+' '+p.sname+' '+p.ename+' '+p.memo+' '+waveLabel(p.wave)).normalize('NFC').toLowerCase().includes(q)));
   const el=$('#list');
   if(!S.parts.length){el.innerHTML=`<div class="empty"><strong>아직 등록한 파츠가 없어요</strong>게임에서 얻은 파츠를 [+ 파츠 등록]으로 하나씩 기록해 보세요.<br>친구에게 받은 백업 코드가 있다면 설정 탭에서 불러올 수 있어요.</div>`;return}
   if(!ps.length){el.innerHTML=`<div class="empty"><strong>조건에 맞는 파츠가 없어요</strong>검색어나 필터를 바꿔 보세요.</div>`;return}
@@ -903,7 +928,7 @@ function renderLooks(){
   el.innerHTML=head+S.looks.map(l=>{
     const items=S.cats.filter(c=>l.slots[c]).map(c=>{const p=S.parts.find(x=>x.id===l.slots[c]);
       if(!p)return `<li><em>${esc(c)}</em><span class="miss">삭제된 파츠</span></li>`;
-      return `<li>${IMG.has(p.id)?`<img src="${IMG.get(p.id)}" alt="">`:''}<em>${esc(c)}</em>${esc(dn(p))}${p.status!=='owned'?' <span class="miss">(미보유)</span>':''}</li>`}).join('');
+      return `<li>${imgOf(p)?`<img src="${esc(imgOf(p))}" alt="">`:''}<em>${esc(c)}</em>${esc(dn(p))}${p.status!=='owned'?' <span class="miss">(미보유)</span>':''}</li>`}).join('');
     return `<article class="look"><div class="look-h"><h3>${esc(l.name)}</h3><button class="btn" data-look="${l.id}">편집</button></div>${l.memo?`<p style="margin:6px 0 0;color:var(--ink-soft);font-size:14px">${esc(l.memo)}</p>`:''}<ul>${items||'<li><em>선택한 파츠 없음</em></li>'}</ul></article>`}).join('');
 }
 
@@ -931,18 +956,18 @@ function render(){
 }
 
 /* track: 탄별 · 경로별 */
-const secKey=p=>p.acq===RANK?'rank:'+(p.rtype||''):isEvSt(p)?'evst:'+nk(p.sname):'acq:'+p.acq;
+const secKey=p=>p.acq===RANK?'rank:'+(p.rtype||''):isEvSt(p)?'evst:'+nk(p.sname):(p.acq===EVENT&&p.ename)?'evnt:'+nk(p.ename):'acq:'+p.acq;
 const secOrder=k=>{const [kind,v]=[k.slice(0,k.indexOf(':')),k.slice(k.indexOf(':')+1)];
-  if(kind==='rank')return acqIdx(RANK)*10+(RTYPES.includes(v)?RTYPES.indexOf(v):5);if(kind==='evst')return acqIdx(STAMP)*10+1;return acqIdx(v)*10};
-const secTitle=k=>{const v=k.slice(k.indexOf(':')+1);if(k.startsWith('evst:'))return `이벤트 스탬프 <small>${esc(v)}</small>`;if(k.startsWith('rank:'))return v?`<span class="ty ty-${v}">${v}</span> 랭크`:'랭크 달성 (타입 미선택)';return esc(v)};
-const secText=k=>{const v=k.slice(k.indexOf(':')+1);if(k.startsWith('evst:'))return `이벤트 · ${stCore(v)}`;return k.startsWith('rank:')?(v?v+' 랭크':'타입 미선택 랭크'):v};
+  if(kind==='rank')return acqIdx(RANK)*10+(RTYPES.includes(v)?RTYPES.indexOf(v):5);if(kind==='evst')return acqIdx(STAMP)*10+1;if(kind==='evnt')return acqIdx(EVENT)*10+1;return acqIdx(v)*10};
+const secTitle=k=>{const v=k.slice(k.indexOf(':')+1);if(k.startsWith('evst:'))return `이벤트 스탬프 <small>${esc(v)}</small>`;if(k.startsWith('evnt:'))return `이벤트 <small>${esc(v)}</small>`;if(k.startsWith('rank:'))return v?`<span class="ty ty-${v}">${v}</span> 랭크`:'랭크 달성 (타입 미선택)';return esc(v)};
+const secText=k=>{const v=k.slice(k.indexOf(':')+1);if(k.startsWith('evst:'))return `이벤트 · ${stCore(v)}`;if(k.startsWith('evnt:'))return v;return k.startsWith('rank:')?(v?v+' 랭크':'타입 미선택 랭크'):v};
 function renderTrack(){
   const el=$('#track');
   if(!S.parts.length){$('#tWave').innerHTML='';$('#tSec').innerHTML='';el.innerHTML=`<div class="empty"><strong>아직 등록한 파츠가 없어요</strong>파츠를 등록하면 탄별, 획득 경로별로 모아서 보여 드려요.</div>`;return}
   const ws=waves();if(view.twave===null||!ws.includes(view.twave))view.twave=ws[0];
   $('#tWave').innerHTML=ws.map(w=>{const ps=S.parts.filter(p=>p.wave===w);return `<button class="chip" data-v="${esc(w)}" aria-pressed="${view.twave===w}">${w?esc(waveLabel(w)):'탄 미입력'}<b>${ps.filter(p=>p.status==='owned').length}/${ps.length}</b></button>`}).join('');
   const inWave=S.parts.filter(p=>p.wave===view.twave);
-  const keys=[...new Set(inWave.map(secKey))].sort((a,b)=>secOrder(a)-secOrder(b)||(a.startsWith('evst:')&&b.startsWith('evst:')?evRank(a.slice(5))-evRank(b.slice(5)):0)||a.localeCompare(b,'ko'));
+  const keys=[...new Set(inWave.map(secKey))].sort((a,b)=>secOrder(a)-secOrder(b)||(a.startsWith('evst:')&&b.startsWith('evst:')?evRank('s:'+a.slice(5))-evRank('s:'+b.slice(5)):a.startsWith('evnt:')&&b.startsWith('evnt:')?evRank('e:'+a.slice(5))-evRank('e:'+b.slice(5)):0)||a.localeCompare(b,'ko'));
   if(view.tsec!=='all'&&!keys.includes(view.tsec))view.tsec='all';
   $('#tSec').innerHTML=`<button class="chip" data-v="all" aria-pressed="${view.tsec==='all'}">전체</button>`+keys.map(k=>`<button class="chip" data-v="${esc(k)}" aria-pressed="${view.tsec===k}">${esc(secText(k))}<b>${inWave.filter(p=>secKey(p)===k).length}</b></button>`).join('');
   const show=view.tsec==='all'?keys:[view.tsec];
@@ -956,7 +981,7 @@ function renderTrack(){
       <ol class="steps">${ps.map(p=>`<li class="${p.status}">
         <button class="open" aria-label="${esc(dn(p))} 정보 보기" data-open="${p.id}"></button>
         <span class="no" aria-hidden="true">${isStep&&p.step?esc(p.step):'★'}</span>
-        <span class="tp">${IMG.has(p.id)?`<img src="${IMG.get(p.id)}" alt="" loading="lazy">`:CAM}</span>
+        <span class="tp">${imgOf(p)?`<img src="${esc(imgOf(p))}" alt="" loading="lazy">`:CAM}</span>
         <span class="tn">${esc(dn(p))}${p.fav?`<span class="hs" role="img" aria-label="원해요">${HEART}</span>`:''}${p.name&&p.nameJa?` <small lang="ja">${esc(p.nameJa)}</small>`:''}<small>${esc(p.cat)}${p.memo?' / '+esc(p.memo):''}</small></span>
         <button class="stamp" data-stamp="${p.id}" aria-label="상태: ${STATUS[p.status]}. 눌러서 바꾸기">${STATUS[p.status]}</button>
       </li>`).join('')}</ol></section>`}).join('')||`<div class="empty"><strong>이 탄에는 파츠가 없어요</strong></div>`;
@@ -989,13 +1014,13 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'&&quick&&!document.qu
 let viewId=null,returnTo=null;
 function fillView(){
   const p=S.parts.find(x=>x.id===viewId);if(!p){if($('#dView').open)$('#dView').close();return}
-  const pic=$('#vPic');pic.className='pv-pic'+(p.status==='owned'?' owned':'');pic.innerHTML=IMG.has(p.id)?`<img src="${IMG.get(p.id)}" alt="${esc(dn(p))} 사진">`:CAM;
+  const pic=$('#vPic');pic.className='pv-pic'+(p.status==='owned'?' owned':'');pic.innerHTML=imgOf(p)?`<img src="${esc(imgOf(p))}" alt="${esc(dn(p))} 사진">`:CAM;
   $('#vName').textContent=p.name||p.nameJa||'이름 없는 파츠';$('#vName').lang=p.name?'ko':'ja';
   const ja=p.name&&p.nameJa?p.nameJa:'';$('#vJa').textContent=ja;$('#vJa').classList.toggle('hidden',!ja);
   $('#vCat').textContent=p.cat;
   $('#vWave').innerHTML=p.wave?`<span class="wv">${esc(waveLabel(p.wave))}</span>`:'<span style="color:var(--ink-soft)">미입력</span>';
   $('#vRoute').innerHTML=routeHTML(p)||'<span style="color:var(--ink-soft)">미입력</span>';
-  $('#vSName').textContent=p.acq===STAMP?(p.sname||'아이카츠! 스탬프 (일반)'):'';$('#vSNameRow').classList.toggle('hidden',p.acq!==STAMP);$('#vNote').textContent=p.note||'';$('#vNoteRow').classList.toggle('hidden',!p.note);
+  $('#vSNameLb').textContent=p.acq===EVENT?'이벤트 이름':'스탬프 이름';$('#vSName').textContent=p.acq===STAMP?(p.sname||'아이카츠! 스탬프 (일반)'):p.acq===EVENT?(p.ename||'미입력'):'';$('#vSNameRow').classList.toggle('hidden',p.acq!==STAMP&&p.acq!==EVENT);$('#vNote').textContent=p.note||'';$('#vNoteRow').classList.toggle('hidden',!p.note);
   document.querySelectorAll('#vStatus button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.v===p.status));
   $('#vFav').setAttribute('aria-pressed',!!p.fav);
 }
@@ -1015,12 +1040,12 @@ function openPart(id,pre){
   $('#pAcq').innerHTML=S.acq.map(a=>`<option>${esc(a)}</option>`).join('');
   $('#pName').value=p?p.name:'';$('#pNameJa').value=p?p.nameJa:'';$('#pNote').value=p?p.note:'';
   $('#pCat').value=p?p.cat:(view.cat!=='all'?view.cat:S.cats[0]);
-  $('#pAcq').value=p?p.acq:(view.acq!=='all'?view.acq:S.acq[0]);fillSnames();$('#pSName').value=p?p.sname:'';$('#pStep').value=p?p.step:'';$('#pRType').innerHTML=rtOpts(p?p.rtype:'');syncStep();
+  $('#pAcq').value=p?p.acq:(view.acq!=='all'?view.acq:S.acq[0]);fillSnames();$('#pSName').value=p?p.sname:'';$('#pEName').value=p?p.ename:'';$('#pStep').value=p?p.step:'';$('#pRType').innerHTML=rtOpts(p?p.rtype:'');syncStep();
   $('#pWave').value=p?p.wave:(view.wave!=='all'?view.wave:'');$('#pMemo').value=p?p.memo:'';
   setPStatus(p?p.status:'owned');
   $('#pDel').classList.toggle('hidden',!p);
   pImg=undefined;showPv(p&&IMG.get(p.id));
-  if(!p&&pre){$('#pWave').value=pre.wave||'';if(pre.acq&&S.acq.includes(pre.acq))$('#pAcq').value=pre.acq;$('#pSName').value=pre.sname||'';$('#pRType').innerHTML=rtOpts(pre.rtype||'');syncStep()}
+  if(!p&&pre){$('#pWave').value=pre.wave||'';if(pre.acq&&S.acq.includes(pre.acq))$('#pAcq').value=pre.acq;$('#pSName').value=pre.sname||'';$('#pEName').value=pre.ename||'';$('#pRType').innerHTML=rtOpts(pre.rtype||'');syncStep()}
   setPFav(!!(p&&p.fav));
   $('#dPart').showModal();setTimeout(()=>$('#pName').focus(),50);
 }
@@ -1032,7 +1057,7 @@ $('#pStatus').addEventListener('click',e=>{const b=e.target.closest('button');if
 $('#fPart').addEventListener('submit',e=>{
   e.preventDefault();const name=nk($('#pName').value),nameJa=nk($('#pNameJa').value);
   if(!name&&!nameJa){toast('파츠 이름이나 일본어 이름 중 하나는 적어 주세요');$('#pName').focus();return}
-  const data={name,nameJa,note:$('#pNote').value.trim(),cat:$('#pCat').value,acq:$('#pAcq').value,step:hasStep($('#pAcq').value)?$('#pStep').value.replace(/\D/g,'').slice(0,4):'',sname:$('#pAcq').value===STAMP?nk($('#pSName').value).slice(0,40):'',rtype:typedFor($('#pAcq').value,$('#pCat').value)?$('#pRType').value:'',wave:$('#pWave').value.trim().replace(/\s*탄$/,''),status:pStatus,fav:pFav,memo:$('#pMemo').value.trim()};
+  const data={name,nameJa,note:$('#pNote').value.trim(),cat:$('#pCat').value,acq:$('#pAcq').value,step:hasStep($('#pAcq').value)?$('#pStep').value.replace(/\D/g,'').slice(0,4):'',sname:$('#pAcq').value===STAMP?nk($('#pSName').value).slice(0,40):'',ename:$('#pAcq').value===EVENT?nk($('#pEName').value).slice(0,40):'',rtype:typedFor($('#pAcq').value,$('#pCat').value)?$('#pRType').value:'',wave:$('#pWave').value.trim().replace(/\s*탄$/,''),status:pStatus,fav:pFav,memo:$('#pMemo').value.trim()};
   let id=editId;
   if(editId){Object.assign(S.parts.find(x=>x.id===editId),data);toast('저장했어요')}
   else{const dup=S.parts.some(p=>dn(p)===dn(data)&&p.cat===data.cat);id=uid();S.parts.push({id,t:Date.now(),...data});toast(dup?'같은 이름의 파츠가 이미 있어요. 등록은 했어요':'등록했어요')}
@@ -1041,8 +1066,9 @@ $('#fPart').addEventListener('submit',e=>{
   done.catch(()=>toast('이미지를 저장하지 못했어요. 브라우저 저장 공간을 확인해 주세요')).finally(render);
 });
 $('#pCancel').onclick=()=>$('#dPart').close();
-function fillSnames(){const s=new Set(['아이카츠! 스탬프']);S.parts.forEach(p=>{if(p.acq===STAMP&&p.sname)s.add(p.sname)});$('#snameList').innerHTML=[...s].map(v=>`<option value="${esc(v)}">`).join('')}
-function syncStep(){const a=$('#pAcq').value,on=hasStep(a),ty=typedFor(a,$('#pCat').value);$('#pSName').classList.toggle('hidden',a!==STAMP);$('#pRoute').classList.toggle('typed',ty);$('#pRType').setAttribute('aria-label',a===RANK?'랭크 타입':'페이스 타입');$('#pStepBox').classList.toggle('hidden',!on);$('#pMemo').classList.toggle('detail',on||ty);$('#pMemo').style.gridColumn=(on||ty)?'':'auto';if(on)$('#pStepLb').textContent='번째 '+STEP_LB[a]}
+function fillSnames(){const s=new Set(['아이카츠! 스탬프']),e=new Set();S.parts.forEach(p=>{if(p.acq===STAMP&&p.sname)s.add(p.sname);if(p.acq===EVENT&&p.ename)e.add(p.ename)});$('#snameList').innerHTML=[...s].map(v=>`<option value="${esc(v)}">`).join('');$('#enameList').innerHTML=[...e].map(v=>`<option value="${esc(v)}">`).join('')}
+const memoPh=a=>a===EVENT?'조건 (예: 5곡 클리어)':'상세 (선택)';
+function syncStep(){const a=$('#pAcq').value,on=hasStep(a),ty=typedFor(a,$('#pCat').value);$('#pSName').classList.toggle('hidden',a!==STAMP);$('#pEName').classList.toggle('hidden',a!==EVENT);$('#pMemo').placeholder=memoPh(a);$('#pMemo').setAttribute('aria-label',a===EVENT?'이벤트 조건':'획득 경로 상세');$('#pRoute').classList.toggle('typed',ty);$('#pRType').setAttribute('aria-label',a===RANK?'랭크 타입':'페이스 타입');$('#pStepBox').classList.toggle('hidden',!on);$('#pMemo').classList.toggle('detail',on||ty);$('#pMemo').style.gridColumn=(on||ty)?'':'auto';if(on)$('#pStepLb').textContent='번째 '+STEP_LB[a]}
 $('#pAcq').addEventListener('change',syncStep);
 $('#pCat').addEventListener('change',syncStep);
 function showPv(url){const v=$('#pImgPv');v.classList.toggle('has',!!url);v.innerHTML=url?`<img src="${url}" alt="파츠 사진">`:`${CAM}<span>눌러서 파츠 사진 넣기</span>`;$('#pImgDel').classList.toggle('hidden',!url);$('#pImgPick').textContent=url?'사진 바꾸기':'사진 고르기'}
@@ -1057,7 +1083,7 @@ function openBulk(files){
   const opt=(arr,cur)=>arr.map(x=>`<option ${x===cur?'selected':''}>${esc(x)}</option>`).join('');
   $('#bCat').innerHTML=opt(S.cats,view.cat!=='all'?view.cat:S.cats[0]);
   $('#bAcq').innerHTML=opt(S.acq,view.acq!=='all'?view.acq:S.acq[0]);
-  fillSnames();$('#bSName').value='';$('#bWave').value=view.wave!=='all'?view.wave:'';$('#bRType').innerHTML=rtOpts('');$('#bMemo').value='';setBStatus('owned');setBFav(false);
+  fillSnames();$('#bSName').value='';$('#bEName').value='';$('#bWave').value=view.wave!=='all'?view.wave:'';$('#bRType').innerHTML=rtOpts('');$('#bMemo').value='';setBStatus('owned');setBFav(false);
   renderBulk();setBTarget(bTarget);if(!$('#dBulk').open)$('#dBulk').showModal();
   if(files&&files.length)addBulk(files);
 }
@@ -1114,7 +1140,7 @@ function renderBulk(){
     ${m?`<label class="lk"><input type="checkbox" ${b.link?'checked':''}> 이미 있는 '${esc(dn(m))}'(${esc(m.cat)})에 이미지 ${IMG.has(m.id)?'바꿔 넣기':'넣기'}</label>`:''}</div>`}).join('');
   const linked=bulk.filter(b=>b.link&&matchOf(b.name)).length,fresh=bulk.length-linked;
   $('#bCount').textContent=bulk.length?`${bulk.length}장 선택됨. 이름이 다르면 여기서 고쳐 주세요.`:'';
-  $('#bCommon').classList.toggle('hidden',!fresh);$('#bStepHint').classList.toggle('hidden',!hasStep($('#bAcq').value));const bty=typedFor($('#bAcq').value,$('#bCat').value)||bulk.some(b=>(b.cat||'')===FACE);$('#bRoute').classList.toggle('typed',bty);$('#bSName').classList.toggle('hidden',$('#bAcq').value!==STAMP);$('#bRTypeHint').classList.toggle('hidden',!bty);
+  $('#bCommon').classList.toggle('hidden',!fresh);$('#bStepHint').classList.toggle('hidden',!hasStep($('#bAcq').value));const bty=typedFor($('#bAcq').value,$('#bCat').value)||bulk.some(b=>(b.cat||'')===FACE);$('#bRoute').classList.toggle('typed',bty);$('#bSName').classList.toggle('hidden',$('#bAcq').value!==STAMP);$('#bEName').classList.toggle('hidden',$('#bAcq').value!==EVENT);$('#bMemo').placeholder=memoPh($('#bAcq').value);$('#bRTypeHint').classList.toggle('hidden',!bty);
   const s=$('#bSave');s.disabled=!bulk.length;
   s.textContent=!bulk.length?'등록':[fresh?`새 파츠 ${fresh}개 등록`:'',linked?`이미지 ${linked}개 연결`:''].filter(Boolean).join(', ');
 }
@@ -1133,7 +1159,7 @@ $('#bCancel').onclick=()=>$('#dBulk').close();
 $('#dBulk').addEventListener('close',()=>{bulk.forEach(b=>URL.revokeObjectURL(b.url));bulk=[]});
 $('#fBulk').addEventListener('submit',async e=>{
   e.preventDefault();if(!bulk.length)return;
-  const common={cat:$('#bCat').value,acq:$('#bAcq').value,wave:$('#bWave').value.trim().replace(/\s*탄$/,''),sname:$('#bAcq').value===STAMP?nk($('#bSName').value).slice(0,40):'',memo:$('#bMemo').value.trim(),status:bStatus,fav:bFav};
+  const common={cat:$('#bCat').value,acq:$('#bAcq').value,wave:$('#bWave').value.trim().replace(/\s*탄$/,''),sname:$('#bAcq').value===STAMP?nk($('#bSName').value).slice(0,40):'',ename:$('#bAcq').value===EVENT?nk($('#bEName').value).slice(0,40):'',memo:$('#bMemo').value.trim(),status:bStatus,fav:bFav};
   let add=0,link=0,fail=0;const jobs=[];
   for(const b of bulk){const m=b.link&&matchOf(b.name);
     if(m){jobs.push(setImg(m.id,b.blob).then(()=>link++,()=>fail++))}
@@ -1286,7 +1312,7 @@ async function applyRemote(m,force){
   let inc,raw;try{raw=JSON.parse(m.state);inc=normalize(raw)}catch(e){return false}
   // 예전 버전 화면(스탬프 이름 칸이 없는 버전)이 저장한 내용이 들어오면, 이 기기에 있던 스탬프 이름을 지키고 다시 올려요
   let healed=0;const rawParts=new Map((raw.parts||[]).map(x=>[x&&x.id,x]));
-  inc.parts.forEach(p=>{const rp=rawParts.get(p.id);if(rp&&!('sname' in rp)){const old=S.parts.find(x=>x.id===p.id);if(old&&old.sname){p.sname=old.sname;healed++}}});
+  inc.parts.forEach(p=>{const rp=rawParts.get(p.id);if(rp){const old=S.parts.find(x=>x.id===p.id);if(old){if(!('sname' in rp)&&old.sname){p.sname=old.sname;healed++}if(!('ename' in rp)&&old.ename){p.ename=old.ename;healed++}}}});
   const be=await getBackend();const code=SYNC.code;
   setSyncSt('pulling');
   const theme=S.theme;S=inc;S.theme=theme;reapplyProfile();saveLocal();applyTheme();render();
@@ -1413,7 +1439,7 @@ $('#nPreview').onclick=()=>{const title=$('#nTitle').value.trim()||'(제목 없�
   popQ=[{kind:nKind,title,date:$('#nDate').value||today(),body:$('#nBody').value.trim(),link}];popI=0;popPreview=true;showPop()};
 
 /* 새 버전 알림 (앱에서만): 올라온 화면의 버전이 지금보다 새로우면 위에 알려 줘요 */
-const APP_VER='2026.11.10';
+const APP_VER='2026.11.20-2';
 async function checkUpdate(){
   if(!SEED_URL||!navigator.onLine)return;
   try{const r=await fetch('./index.html?fresh='+Date.now(),{cache:'no-store'});if(!r.ok)return;const tx=await r.text();
@@ -1506,7 +1532,7 @@ $('#lDel').onclick=()=>{if(!confirm('이 조합을 삭제할까요?'))return;S.l
 document.querySelector('nav.tabs').addEventListener('click',e=>{const b=e.target.closest('button[data-tab]');if(!b)return;view.tab=b.dataset.tab;render();window.scrollTo({top:0})});
 $('#fab').onclick=()=>{if(view.tab==='looks')return openLook();if(view.tab==='info')return openNews();
   if(view.tab==='track'&&view.twave!==null){const k=view.tsec;let pre={wave:view.twave};
-    if(k!=='all'){if(k.startsWith('rank:'))Object.assign(pre,{acq:RANK,rtype:k.slice(5)});else if(k.startsWith('evst:'))Object.assign(pre,{acq:STAMP,sname:k.slice(5)});else pre.acq=k.slice(4)}
+    if(k!=='all'){if(k.startsWith('rank:'))Object.assign(pre,{acq:RANK,rtype:k.slice(5)});else if(k.startsWith('evst:'))Object.assign(pre,{acq:STAMP,sname:k.slice(5)});else if(k.startsWith('evnt:'))Object.assign(pre,{acq:EVENT,ename:k.slice(5)});else pre.acq=k.slice(4)}
     return openPart(null,pre)}
   openPart()};
 $('#q').addEventListener('input',e=>{view.q=e.target.value;renderList()});
@@ -1596,7 +1622,7 @@ async function doImport(text,merge=$('#imMerge').checked){
   if(merge){
     const key=p=>p.cat+'|'+dn(p);const have=new Map(S.parts.map(p=>[key(p),p]));let add=0;
     inc.parts.forEach(p=>{const img=p._img;delete p._img;const h=have.get(key(p));
-      if(h){if(p.sname&&!h.sname)h.sname=p.sname;if(p.status==='owned')h.status='owned';if(p.fav)h.fav=true;if(img&&!IMG.has(h.id))imgs.push([h.id,img])}
+      if(h){if(p.sname&&!h.sname)h.sname=p.sname;if(p.ename&&!h.ename)h.ename=p.ename;if(p.status==='owned')h.status='owned';if(p.fav)h.fav=true;if(img&&!IMG.has(h.id))imgs.push([h.id,img])}
       else{const id=uid();S.parts.push({...p,id});add++;if(img)imgs.push([id,img])}});
     inc.cats.forEach(c=>{if(!S.cats.includes(c))S.cats.push(c)});inc.acq.forEach(a=>{if(!S.acq.includes(a))S.acq.push(a)});
     inc.news.forEach(n=>{if(!S.news.some(x=>x.id===n.id))S.news.push(n)});
@@ -1655,7 +1681,7 @@ async function applySeed(){
     inc.chars=[];inc.profiles=null; // 공유 파일에 들어 있는 관리자의 캐릭터 기록은 가져오지 않아요
     S=inc;reapplyProfile();add=S.parts.length;msg=`기본 파츠 ${add}개를 불러왔어요`;
   }else{
-    const F=['name','nameJa','cat','acq','step','rtype','sname','wave','memo','after','mv'];
+    const F=['name','nameJa','cat','acq','step','rtype','sname','ename','img','imgv','wave','memo','after','mv'];
     // 공유 파일의 파츠 id → 이 기기의 파츠 id (위치 조정 기준을 맞추기 위해)
     const idMap=new Map();inc.parts.forEach(p=>{const h=S.parts.find(x=>x.id===p.id)||S.parts.find(x=>x.cat===p.cat&&dn(x)===dn(p));idMap.set(p.id,h?h.id:p.id)});
     inc.parts.forEach(p=>{if(p.after&&p.after!=='^')p.after=idMap.get(p.after)||p.after});
